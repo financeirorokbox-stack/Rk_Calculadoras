@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Calculadora MCU — Rk. by Mudiflow</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rose:#C49A8A; --rose-dark:#9e7060; --rose-light:#e8d4cc;
+    --rose-panel:#f5ece8; --rose-panelborder:#e0c8bf;
+    --bg:#F5EDE3; --white:#FFFFFF; --text:#2a2a2a;
+    --muted:#9e8e86; --border:#ddd0c8;
+    --green:#7aab7a; --red:#c96b5e; --yellow:#c9a85e;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:3rem;}
+
+  .top-banner{background:var(--rose);padding:.55rem;text-align:center;font-size:.75rem;font-weight:500;color:#fff;letter-spacing:.12em;}
+
+  header{background:var(--white);border-bottom:1px solid var(--border);padding:1.1rem 2.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;}
+  .logo{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:600;color:var(--text);letter-spacing:-.02em;line-height:1;}
+  .logo .dot{color:var(--rose);}
+  .logo-sub{font-size:.62rem;font-weight:400;color:var(--muted);letter-spacing:.18em;text-transform:uppercase;margin-top:.25rem;}
+  .author{font-size:.68rem;color:var(--muted);text-align:right;}
+  .author strong{color:var(--rose-dark);display:block;font-size:.76rem;font-weight:600;letter-spacing:.04em;}
+
+  /* BARRA TOPO */
+  .top-bar{background:var(--white);border-bottom:1px solid var(--border);padding:.7rem 2.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
+  .top-bar-title{font-size:.72rem;color:var(--muted);font-weight:500;letter-spacing:.06em;text-transform:uppercase;}
+  .btn-limpar{font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:transparent;border:1px solid var(--border);padding:.4rem 1rem;cursor:pointer;transition:all .2s;margin-left:auto;}
+  .btn-limpar:hover{border-color:var(--rose-dark);color:var(--rose-dark);}
+
+  /* LAYOUT */
+  .main{max-width:980px;margin:0 auto;padding:2rem 1.5rem;display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem;align-items:start;}
+
+  /* PANELS */
+  .panel{background:var(--rose-panel);border:1px solid var(--rose-panelborder);overflow:hidden;}
+  .panel-title{padding:.8rem 1.25rem;font-size:.65rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--rose-panelborder);display:flex;align-items:center;gap:.5rem;}
+  .dot-acc{width:5px;height:5px;border-radius:50%;background:var(--rose);flex-shrink:0;}
+  .field{display:flex;align-items:center;justify-content:space-between;padding:.6rem 1.25rem;border-bottom:1px solid var(--rose-panelborder);gap:.75rem;}
+  .field:last-child{border-bottom:none;}
+  .field-label{font-size:.8rem;color:var(--text);flex:1;line-height:1.3;font-weight:400;}
+  .field-label small{display:block;font-size:.68rem;color:var(--muted);margin-top:.1rem;font-weight:300;}
+  .iw{display:flex;align-items:center;background:var(--white);border:1px solid var(--rose-panelborder);overflow:hidden;min-width:105px;transition:border-color .2s;}
+  .iw:focus-within{border-color:var(--rose);}
+  .ip{padding:.42rem .35rem .42rem .7rem;font-size:.74rem;color:var(--muted);white-space:nowrap;}
+  input[type=number]{background:transparent;border:none;outline:none;color:var(--text);font-size:.84rem;width:62px;padding:.42rem .55rem .42rem 0;text-align:right;}
+  input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;}
+
+  /* PAINEL DESCONTO */
+  .desc-panel{background:var(--white);border:1.5px solid var(--rose);overflow:hidden;grid-column:1/-1;}
+  .desc-panel .panel-title{background:var(--rose);color:#fff;border-bottom:none;}
+  .desc-panel .dot-acc{background:#fff;}
+  .desc-panel .field{border-bottom-color:var(--rose-panelborder);}
+
+  /* TABELA COMPARATIVA */
+  .results-panel{background:var(--white);border:1px solid var(--rose-panelborder);grid-column:1/-1;overflow:hidden;}
+  .tbl-head{display:grid;grid-template-columns:1fr 120px 120px 90px;padding:.7rem 1.25rem;background:var(--rose-panel);border-bottom:2px solid var(--rose-panelborder);gap:.5rem;}
+  .th{font-size:.65rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;text-align:right;color:var(--muted);}
+  .th:first-child{text-align:left;}
+  .th.col-base{color:var(--rose-dark);}
+  .th.col-desc{color:var(--rose);}
+  .tbl-row{display:grid;grid-template-columns:1fr 120px 120px 90px;align-items:center;padding:.62rem 1.25rem;border-bottom:1px solid var(--rose-panelborder);gap:.5rem;font-size:.82rem;}
+  .tbl-row:last-child{border-bottom:none;}
+  .tbl-row.subtotal{background:var(--rose-panel);}
+  .tbl-row.total{background:var(--rose-light);}
+  .td-label{color:var(--text);font-weight:400;}
+  .td-label small{display:block;font-size:.68rem;color:var(--muted);margin-top:.1rem;}
+  .td-label.bold{font-weight:600;}
+  .td-base,.td-desc,.td-var{font-size:.83rem;font-weight:500;text-align:right;}
+  .td-base{color:var(--rose-dark);}
+  .td-desc{color:var(--rose);}
+  .td-var{color:var(--muted);font-size:.76rem;}
+  .td-base.cost{color:var(--red);}
+  .td-desc.cost{color:var(--red);}
+  .td-var.worse{color:var(--red);}
+  .td-var.better{color:var(--green);}
+  .td-var.neutral{color:var(--muted);}
+
+  /* MCU BLOCK */
+  .mcu-block{background:var(--bg);border-top:2px solid var(--rose);padding:1.25rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
+  .mcu-label{font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--text);}
+  .mcu-label small{display:block;font-family:'Montserrat',sans-serif;font-size:.68rem;color:var(--muted);font-style:normal;margin-top:.2rem;}
+  .mcu-values{display:flex;gap:1.25rem;align-items:center;flex-wrap:wrap;}
+  .mcu-val{text-align:right;}
+  .mcu-val .num{font-size:1.5rem;font-weight:600;color:var(--rose-dark);line-height:1;}
+  .mcu-val .num.disc{color:var(--rose);}
+  .mcu-val .num.queda{font-size:1.1rem;}
+  .mcu-val .sub{font-size:.68rem;color:var(--muted);margin-top:.2rem;}
+  .mcu-sep{color:var(--border);font-size:1.2rem;}
+  .mcu-divider{border-left:1px solid var(--border);padding-left:1.25rem;margin-left:.25rem;}
+
+  /* INSIGHT */
+  .insight-box{background:var(--rose-panel);border:1px solid var(--rose-panelborder);padding:1rem 1.25rem;font-size:.8rem;color:var(--muted);line-height:1.7;grid-column:1/-1;font-weight:300;}
+
+  /* PE */
+  .pe-panel{background:var(--rose-panel);border:1px solid var(--rose-panelborder);grid-column:1/-1;padding:1.25rem;}
+  .pe-title{font-size:.65rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;}
+  .pe-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;}
+  .pe-card{background:var(--white);border:1px solid var(--rose-panelborder);padding:.95rem 1rem;}
+  .pe-card-label{font-size:.66rem;color:var(--muted);margin-bottom:.35rem;letter-spacing:.05em;text-transform:uppercase;font-weight:500;}
+  .pe-card-val{font-size:.98rem;font-weight:500;color:var(--text);}
+  .pe-card-val.disc{color:var(--rose);}
+  .pe-card-sub{font-size:.66rem;color:var(--muted);margin-top:.18rem;}
+  .pe-fixed-wrap{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;flex-wrap:wrap;}
+  .pe-fixed-wrap label{font-size:.8rem;color:var(--text);}
+
+  /* TOOLTIP */
+  .tip{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:var(--rose-light);border:1px solid var(--rose);color:var(--rose-dark);font-size:.6rem;font-weight:700;cursor:pointer;position:relative;flex-shrink:0;line-height:1;margin-left:.3rem;}
+  .tip-box{display:none;position:fixed;background:var(--white);border:1px solid var(--rose-panelborder);box-shadow:0 4px 18px rgba(0,0,0,.13);padding:.75rem 1rem;font-size:.73rem;color:var(--text);line-height:1.55;width:240px;z-index:9999;font-weight:400;}
+  .tip-box.visible{display:block;}
+  .tip-title{font-weight:600;color:var(--rose-dark);margin-bottom:.3rem;font-size:.74rem;}
+
+  /* GLOSSÁRIO */
+  .glossario{max-width:980px;margin:0 auto 2rem;padding:0 1.5rem;}
+  .glossario-header{background:var(--rose);padding:.75rem 1.25rem;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;}
+  .glossario-header-title{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:600;color:#fff;letter-spacing:.04em;}
+  .glossario-header-sub{font-size:.7rem;color:rgba(255,255,255,.8);letter-spacing:.06em;}
+  .glossario-body{background:var(--white);border:1px solid var(--rose-panelborder);border-top:none;display:grid;grid-template-columns:1fr 1fr;gap:0;}
+  .gitem{padding:1rem 1.25rem;border-bottom:1px solid var(--rose-panelborder);border-right:1px solid var(--rose-panelborder);}
+  .gitem:nth-child(even){border-right:none;}
+  .gitem:nth-last-child(-n+2){border-bottom:none;}
+  .gitem-term{font-size:.72rem;font-weight:600;color:var(--rose-dark);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.3rem;}
+  .gitem-def{font-size:.78rem;color:var(--text);line-height:1.6;font-weight:300;}
+  .gitem-ex{font-size:.72rem;color:var(--muted);margin-top:.3rem;line-height:1.5;font-style:italic;}
+
+  footer{text-align:center;padding:1.5rem;font-size:.7rem;color:var(--muted);border-top:1px solid var(--border);max-width:980px;margin:0 auto;letter-spacing:.06em;}
+
+  @media(max-width:680px){
+    .main{grid-template-columns:1fr;padding:1rem;gap:1rem;}
+    .main > *{grid-column:1 !important;}
+    .tbl-head,.tbl-row{grid-template-columns:1fr 85px 85px 60px;}
+    .pe-grid{grid-template-columns:1fr 1fr;}
+    header{padding:1rem 1.25rem;}
+    .author{display:none;}
+    .top-bar{padding:.6rem 1.25rem;}
+    .glossario-body{grid-template-columns:1fr;}
+    .gitem{border-right:none;}
+    .gitem:nth-last-child(-n+2){border-bottom:1px solid var(--rose-panelborder);}
+    .gitem:last-child{border-bottom:none;}
+  }
+
+  /* MIX VAREJO x ATACADO */
+  .mix-panel{background:var(--white);border:1.5px solid var(--rose);overflow:hidden;grid-column:1/-1;}
+  .mix-header{background:var(--rose);padding:.75rem 1.25rem;display:flex;align-items:center;justify-content:space-between;}
+  .mix-header-title{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:600;color:#fff;letter-spacing:.04em;}
+  .mix-badge{font-size:.68rem;font-weight:600;padding:.2rem .75rem;background:rgba(255,255,255,.22);color:#fff;letter-spacing:.06em;}
+  .mix-grid3{display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid var(--rose-panelborder);}
+  .mix-card{padding:1rem 1.25rem;border-right:1px solid var(--rose-panelborder);}
+  .mix-card:last-child{border-right:none;}
+  .mix-card-label{font-size:.63rem;color:var(--muted);text-transform:uppercase;letter-spacing:.09em;margin-bottom:.3rem;font-weight:500;}
+  .mix-card-label small{font-size:.6rem;color:var(--rose-dark);font-weight:600;}
+  .mix-card-val{font-size:1.15rem;font-weight:600;color:var(--rose-dark);}
+  .mix-card-val.rose{color:var(--rose);}
+  .mix-card-sub{font-size:.63rem;color:var(--muted);margin-top:.2rem;}
+  .mix-tbl-head{display:grid;grid-template-columns:1.4fr .6fr .9fr 1fr 1fr;padding:.6rem 1.25rem;background:var(--rose-panel);border-bottom:1px solid var(--rose-panelborder);gap:.5rem;}
+  .mix-th{font-size:.63rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:right;}
+  .mix-th:first-child{text-align:left;}
+  .mix-tbl-row{display:grid;grid-template-columns:1.4fr .6fr .9fr 1fr 1fr;padding:.65rem 1.25rem;border-bottom:1px solid var(--rose-panelborder);gap:.5rem;align-items:center;}
+  .mix-tbl-row.alt{background:var(--rose-panel);}
+  .mix-tbl-row.total{background:var(--rose-light);border-bottom:none;}
+  .mix-td-label{font-size:.8rem;color:var(--text);font-weight:400;}
+  .mix-td-label.bold{font-weight:600;}
+  .mix-td{font-size:.82rem;font-weight:500;text-align:right;color:var(--text);}
+  .mix-td.bold{font-weight:700;color:var(--rose-dark);}
+  .mix-insight{background:var(--rose-panel);border-top:1px solid var(--rose-panelborder);padding:.9rem 1.25rem;font-size:.78rem;color:var(--muted);line-height:1.65;font-weight:300;}
+  @media(max-width:680px){
+    .mix-grid3{grid-template-columns:1fr;}
+    .mix-card{border-right:none;border-bottom:1px solid var(--rose-panelborder);}
+    .mix-tbl-head,.mix-tbl-row{grid-template-columns:1.2fr .5fr .8fr .9fr .9fr;font-size:.7rem;}
+  }
+
+  .btn-voltar{display:inline-flex;align-items:center;gap:.4rem;font-family:'Montserrat',sans-serif;font-size:.7rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-decoration:none;border:1px solid var(--border);padding:.38rem .9rem;transition:all .2s;background:transparent;}
+  .btn-voltar:hover{border-color:var(--rose);color:var(--rose-dark);}
+</style>
+</head>
+<body>
+
+<div class="top-banner">Calculadora de Margem de Contribuição Unitária</div>
+
+<header>
+  <div>
+    <div class="logo">Rk<span class="dot">.</span> <span style="font-size:1rem;font-weight:300;color:var(--muted);letter-spacing:.02em;">by Mudiflow</span></div>
+    <div class="logo-sub">Calculadora MCU</div>
+  </div>
+  <div class="author"><strong>por Elaine Lima</strong>Consultoria &amp; Estratégia Financeira</div>
+</header>
+
+<div class="top-bar">
+  <span class="top-bar-title">Margem de Contribuição Unitária</span>
+  <button class="btn-limpar" onclick="limparCampos()">&#x2715; Limpar</button>
+  <a class="btn-voltar" href="index.html">← Voltar</a>
+</div>
+
+<div class="main">
+
+  <!-- RECEITA -->
+  <div class="panel" style="grid-column:1;">
+    <div class="panel-title"><span class="dot-acc"></span>Receita</div>
+    <div class="field">
+      <div class="field-label">Preço de venda<small>Valor cobrado ao cliente por unidade</small></div>
+      <div class="iw"><span class="ip">R$</span><input type="number" id="preco" value="150" min="0" step="0.01" oninput="calc()"></div>
+    </div>
+  </div>
+
+  <!-- CUSTOS % -->
+  <div class="panel" style="grid-column:2/4;">
+    <div class="panel-title"><span class="dot-acc"></span>Custos variáveis em %</div>
+    <div class="field">
+      <div class="field-label">Imposto sobre venda<small>Simples Nacional, ISS, ICMS</small></div>
+      <div class="iw"><input type="number" id="imposto" value="8" min="0" max="100" step="0.1" oninput="calc()"><span class="ip">%</span></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Comissão de vendedor<small>% pago sobre cada venda realizada</small></div>
+      <div class="iw"><input type="number" id="comissao" value="5" min="0" max="100" step="0.1" oninput="calc()"><span class="ip">%</span></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Taxa do cartão<small>Percentual cobrado pela operadora</small></div>
+      <div class="iw"><input type="number" id="cartao" value="3" min="0" max="100" step="0.1" oninput="calc()"><span class="ip">%</span></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Campanha / tráfego pago<small>% investido em marketing por venda</small></div>
+      <div class="iw"><input type="number" id="campanha" value="6" min="0" max="100" step="0.1" oninput="calc()"><span class="ip">%</span></div>
+    </div>
+  </div>
+
+  <!-- CUSTOS R$ -->
+  <div class="panel" style="grid-column:1;">
+    <div class="panel-title"><span class="dot-acc"></span>Custos variáveis em R$</div>
+    <div class="field">
+      <div class="field-label">Custo do produto / CMV<small>Incluir frete de compra</small></div>
+      <div class="iw"><span class="ip">R$</span><input type="number" id="cmv" value="65" min="0" step="0.01" oninput="calc()"></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Frete de venda<small>Valor subsidiado pela empresa</small></div>
+      <div class="iw"><span class="ip">R$</span><input type="number" id="frete" value="8" min="0" step="0.01" oninput="calc()"></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Outros custos variáveis</div>
+      <div class="iw"><span class="ip">R$</span><input type="number" id="outros" value="0" min="0" step="0.01" oninput="calc()"></div>
+    </div>
+  </div>
+
+  <!-- PONTO DE EQUILÍBRIO INPUT -->
+  <div class="panel" style="grid-column:2;">
+    <div class="panel-title"><span class="dot-acc"></span>Ponto de equilíbrio</div>
+    <div class="field">
+      <div class="field-label">Custos fixos mensais<small>Aluguel, salários, contador, softwares</small></div>
+      <div class="iw"><span class="ip">R$</span><input type="number" id="cf" value="10000" min="0" step="100" oninput="calc()"></div>
+    </div>
+  </div>
+
+  <!-- ATACADO -->
+  <div class="panel" style="grid-column:3;">
+    <div class="panel-title"><span class="dot-acc"></span>Mix varejo × atacado</div>
+    <div class="field">
+      <div class="field-label">Desconto no atacado<small>% aplicado sobre o preço de venda cheio</small></div>
+      <div class="iw"><input type="number" id="atk_desc" value="30" min="0" max="80" step="0.5" oninput="calc()"><span class="ip">%</span></div>
+    </div>
+    <div class="field">
+      <div class="field-label">% das vendas no atacado<small>Proporção mensal de unidades no atacado</small></div>
+      <div class="iw"><input type="number" id="atk_mix" value="40" min="0" max="100" step="1" oninput="calc()"><span class="ip">%</span></div>
+    </div>
+  </div>
+
+  <!-- DESCONTO -->
+  <div class="desc-panel">
+    <div class="panel-title"><span class="dot-acc"></span>Simulação de desconto</div>
+    <div class="field">
+      <div class="field-label">Desconto concedido ao cliente<small>Todos os custos recalculados automaticamente na tabela abaixo</small></div>
+      <div class="iw"><input type="number" id="desconto" value="10" min="0" max="100" step="0.1" oninput="calc()" style="color:var(--rose-dark)"><span class="ip" style="color:var(--rose-dark)">%</span></div>
+    </div>
+  </div>
+
+  <!-- TABELA COMPARATIVA -->
+  <div class="results-panel">
+    <div class="tbl-head">
+      <div class="th" style="text-align:left;color:var(--muted);">Item</div>
+      <div class="th col-base">Sem desc.</div>
+      <div class="th col-desc">Com desc.</div>
+      <div class="th">Variação</div>
+    </div>
+
+    <div class="tbl-row subtotal">
+      <div class="td-label bold">Preço de venda</div>
+      <div class="td-base" id="v_preco">—</div>
+      <div class="td-desc" id="vd_preco">—</div>
+      <div class="td-var" id="var_preco">—</div>
+    </div>
+    <div class="tbl-row">
+      <div class="td-label">(-) Custo produto + frete compra</div>
+      <div class="td-base cost" id="v_cmv">—</div>
+      <div class="td-desc cost" id="vd_cmv">—</div>
+      <div class="td-var neutral" id="var_cmv">fixo</div>
+    </div>
+    <div class="tbl-row">
+      <div class="td-label">(-) Impostos sobre venda</div>
+      <div class="td-base cost" id="v_imp">—</div>
+      <div class="td-desc cost" id="vd_imp">—</div>
+      <div class="td-var" id="var_imp">—</div>
+    </div>
+    <div class="tbl-row">
+      <div class="td-label">(-) Comissão de vendedor</div>
+      <div class="td-base cost" id="v_com">—</div>
+      <div class="td-desc cost" id="vd_com">—</div>
+      <div class="td-var" id="var_com">—</div>
+    </div>
+    <div class="tbl-row">
+      <div class="td-label">(-) Taxa do cartão</div>
+      <div class="td-base cost" id="v_car">—</div>
+      <div class="td-desc cost" id="vd_car">—</div>
+      <div class="td-var" id="var_car">—</div>
+    </div>
+    <div class="tbl-row">
+      <div class="td-label">(-) Campanha / tráfego pago</div>
+      <div class="td-base cost" id="v_camp">—</div>
+      <div class="td-desc cost" id="vd_camp">—</div>
+      <div class="td-var" id="var_camp">—</div>
+    </div>
+    <div class="tbl-row">
+      <div class="td-label">(-) Frete de venda</div>
+      <div class="td-base cost" id="v_fre">—</div>
+      <div class="td-desc cost" id="vd_fre">—</div>
+      <div class="td-var neutral" id="var_fre">fixo</div>
+    </div>
+    <div class="tbl-row">
+      <div class="td-label">(-) Outros custos variáveis</div>
+      <div class="td-base cost" id="v_out">—</div>
+      <div class="td-desc cost" id="vd_out">—</div>
+      <div class="td-var neutral" id="var_out">fixo</div>
+    </div>
+    <div class="tbl-row total">
+      <div class="td-label bold">(=) Total custos variáveis</div>
+      <div class="td-base cost" id="v_total">—</div>
+      <div class="td-desc cost" id="vd_total">—</div>
+      <div class="td-var" id="var_total">—</div>
+    </div>
+
+    <!-- MCU -->
+    <div class="mcu-block">
+      <div class="mcu-label">
+        Margem de Contribuição Unitária
+        <small>sem desconto → com desconto</small>
+      </div>
+      <div class="mcu-values">
+        <div class="mcu-val">
+          <div class="num" id="mcu_val">—</div>
+          <div class="sub" id="mcu_pct">—</div>
+        </div>
+        <div class="mcu-sep">→</div>
+        <div class="mcu-val">
+          <div class="num disc" id="mcu_desc_val">—</div>
+          <div class="sub" id="mcu_desc_pct">—</div>
+        </div>
+        <div class="mcu-val mcu-divider">
+          <div class="num queda" id="mcu_queda">—</div>
+          <div class="sub">queda na MCU
+            <span class="tip" tabindex="0">?<div class="tip-box"><div class="tip-title">Queda na MCU</div>Mostra quanto a margem de contribuição caiu em % após o desconto. Um desconto de 10% no preço pode derrubar a MCU em 30% ou mais, dependendo da estrutura de custos.</div></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INSIGHT -->
+  <div class="insight-box" id="insightBox">—</div>
+
+  <!-- PE RESULTADOS -->
+  <div class="pe-panel">
+    <div class="pe-title"><span style="width:5px;height:5px;border-radius:50%;background:var(--rose);display:inline-block;"></span>&nbsp;Ponto de equilíbrio</div>
+    <div class="pe-grid">
+      <div class="pe-card">
+        <div class="pe-card-label">PE sem desconto</div>
+        <div class="pe-card-val" id="pe_un">—</div>
+        <div class="pe-card-sub">unidades / mês</div>
+      </div>
+      <div class="pe-card">
+        <div class="pe-card-label">PE com desconto</div>
+        <div class="pe-card-val disc" id="pe_desc_un">—</div>
+        <div class="pe-card-sub">unidades / mês</div>
+      </div>
+      <div class="pe-card">
+        <div class="pe-card-label">Faturamento mínimo (sem desc.)</div>
+        <div class="pe-card-val" id="pe_rs">—</div>
+        <div class="pe-card-sub">faturamento mínimo</div>
+      </div>
+      <div class="pe-card">
+        <div class="pe-card-label">Faturamento mínimo (com desc.)</div>
+        <div class="pe-card-val disc" id="pe_desc_rs">—</div>
+        <div class="pe-card-sub">faturamento mínimo</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div style="max-width:980px;margin:0 auto;padding:0 1.5rem 1.5rem;">
+  <div class="mix-panel">
+    <div class="mix-header">
+      <div class="mix-header-title">Balanço varejo × atacado</div>
+      <div class="mix-badge" id="mix_badge">—</div>
+    </div>
+
+    <!-- LINHA DE PREÇOS -->
+    <div class="mix-grid3">
+      <div class="mix-card">
+        <div class="mix-card-label">Preço varejo</div>
+        <div class="mix-card-val" id="mix_preco_var">—</div>
+        <div class="mix-card-sub">preço de venda cheio</div>
+      </div>
+      <div class="mix-card">
+        <div class="mix-card-label">Preço atacado <small id="mix_atk_pct_label"></small></div>
+        <div class="mix-card-val rose" id="mix_preco_atk">—</div>
+        <div class="mix-card-sub">após desconto atacado</div>
+      </div>
+      <div class="mix-card">
+        <div class="mix-card-label">MCU atacado</div>
+        <div class="mix-card-val" id="mix_mcu_atk">—</div>
+        <div class="mix-card-sub" id="mix_mcu_atk_pct">—</div>
+      </div>
+    </div>
+
+    <!-- TABELA MIX -->
+    <div class="mix-tbl-head">
+      <div class="mix-th" style="text-align:left;">Canal</div>
+      <div class="mix-th">% do mix</div>
+      <div class="mix-th">MCU unit.</div>
+      <div class="mix-th">Un. p/ fechar CF</div>
+      <div class="mix-th">Faturamento</div>
+    </div>
+    <div class="mix-tbl-row">
+      <div class="mix-td-label">Varejo (sem desconto)</div>
+      <div class="mix-td" id="mix_var_pct">—</div>
+      <div class="mix-td" id="mix_var_mcu">—</div>
+      <div class="mix-td bold" id="mix_var_un">—</div>
+      <div class="mix-td" id="mix_var_fat">—</div>
+    </div>
+    <div class="mix-tbl-row alt">
+      <div class="mix-td-label">Atacado</div>
+      <div class="mix-td" id="mix_atk_pct_row">—</div>
+      <div class="mix-td" id="mix_atk_mcu">—</div>
+      <div class="mix-td bold" id="mix_atk_un">—</div>
+      <div class="mix-td" id="mix_atk_fat">—</div>
+    </div>
+    <div class="mix-tbl-row total">
+      <div class="mix-td-label bold">Total (mix combinado)</div>
+      <div class="mix-td bold">100%</div>
+      <div class="mix-td bold" id="mix_mcu_pond">—</div>
+      <div class="mix-td bold" id="mix_total_un">—</div>
+      <div class="mix-td bold" id="mix_total_fat">—</div>
+    </div>
+
+    <div class="mix-insight" id="mix_insight">—</div>
+  </div>
+</div>
+
+<!-- GLOSSÁRIO -->
+<div class="glossario">
+  <div class="glossario-header" onclick="toggleGlossario()">
+    <div class="glossario-header-title">Guia de Conceitos — entenda cada termo da calculadora</div>
+    <div class="glossario-header-sub" id="gloss_toggle_txt">▼ clique para expandir</div>
+  </div>
+  <div class="glossario-body" id="glossario_body" style="display:none;">
+    <div class="gitem"><div class="gitem-term">MCU — Margem de Contribuição Unitária</div><div class="gitem-def">É o valor que sobra de cada venda após pagar todos os custos variáveis. Essa sobra cobre os custos fixos mensais e, depois disso, gera lucro.</div><div class="gitem-ex">Ex.: vendeu por R$ 150, custos variáveis R$ 100 → MCU = R$ 50.</div></div>
+    <div class="gitem"><div class="gitem-term">Custos variáveis</div><div class="gitem-def">Gastos que existem apenas quando há uma venda: impostos, comissão, taxa do cartão, frete, CMV. Aumentam proporcionalmente ao volume vendido.</div><div class="gitem-ex">Diferente dos custos fixos, que existem independentemente das vendas.</div></div>
+    <div class="gitem"><div class="gitem-term">CMV — Custo da Mercadoria Vendida</div><div class="gitem-def">Valor pago pelo produto mais o frete de compra. É um custo fixo por unidade — não muda com o desconto dado ao cliente.</div><div class="gitem-ex">Ex.: produto R$ 55 + frete de compra R$ 10 = CMV R$ 65.</div></div>
+    <div class="gitem"><div class="gitem-term">Impacto do desconto na MCU</div><div class="gitem-def">Um desconto no preço reduz a receita, mas os custos fixos por unidade (CMV, frete) permanecem. Isso faz a MCU cair muito mais do que o desconto concedido.</div><div class="gitem-ex">Ex.: desconto de 10% pode derrubar a MCU em 30% ou mais.</div></div>
+    <div class="gitem"><div class="gitem-term">Ponto de Equilíbrio (PE)</div><div class="gitem-def">Quantidade mínima de vendas no mês necessária para cobrir todos os custos fixos. Abaixo do PE, o negócio opera no prejuízo.</div><div class="gitem-ex">Ex.: custos fixos R$ 10.000, MCU R$ 50 → PE = 200 unidades/mês.</div></div>
+    <div class="gitem"><div class="gitem-term">Coluna "Variação"</div><div class="gitem-def">Mostra a diferença em R$ entre o cenário sem desconto e com desconto. Em verde = custo reduziu (bom). Em vermelho = custo aumentou ou receita caiu (ruim).</div><div class="gitem-ex">"Fixo" indica que o item não muda com o desconto (CMV, frete de venda).</div></div>
+  </div>
+</div>
+
+<footer>Rk. by Mudiflow &nbsp;·&nbsp; Calculadora MCU &nbsp;·&nbsp; por Elaine Lima &nbsp;·&nbsp; Estratégia Financeira para PMEs</footer>
+
+<script>
+const fmt  = v => 'R$ ' + (Math.round(v * 100) / 100).toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+const fmtN = v => Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+
+// TOOLTIP
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.tip').forEach(function(tip) {
+    const box = tip.querySelector('.tip-box');
+    if (!box) return;
+    function show() {
+      box.classList.add('visible');
+      const rect = tip.getBoundingClientRect();
+      const bw = 240, bh = box.offsetHeight || 120;
+      let left = rect.left + rect.width / 2 - bw / 2;
+      let top  = rect.top - bh - 8;
+      if (left < 8) left = 8;
+      if (left + bw > window.innerWidth - 8) left = window.innerWidth - bw - 8;
+      if (top < 8) top = rect.bottom + 8;
+      box.style.left = left + 'px';
+      box.style.top  = top  + 'px';
+    }
+    function hide() { box.classList.remove('visible'); }
+    tip.addEventListener('mouseenter', show);
+    tip.addEventListener('mouseleave', hide);
+    tip.addEventListener('focus', show);
+    tip.addEventListener('blur', hide);
+  });
+});
+
+function toggleGlossario() {
+  const body = document.getElementById('glossario_body');
+  const txt  = document.getElementById('gloss_toggle_txt');
+  const open = body.style.display === 'none';
+  body.style.display = open ? 'grid' : 'none';
+  txt.textContent = open ? '▲ clique para fechar' : '▼ clique para expandir';
+}
+
+function limparCampos() {
+  ['preco','imposto','comissao','cartao','campanha','cmv','frete','outros','cf','desconto','atk_desc','atk_mix'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  calc();
+}
+
+function setVar(id, before, after, fixedCost) {
+  const el = document.getElementById(id);
+  if (fixedCost) { el.textContent = 'fixo'; el.className = 'td-var neutral'; return; }
+  const diff = after - before;
+  if (Math.abs(diff) < 0.001) { el.textContent = '–'; el.className = 'td-var neutral'; return; }
+  el.textContent = (diff > 0 ? '+' : '') + fmt(diff);
+  el.className = 'td-var ' + (diff < 0 ? 'better' : 'worse');
+}
+
+function setVarPrice(id, before, after) {
+  const el = document.getElementById(id);
+  const diff = after - before;
+  if (Math.abs(diff) < 0.001) { el.textContent = '–'; el.className = 'td-var neutral'; return; }
+  el.textContent = (diff > 0 ? '+' : '') + fmt(diff);
+  el.className = 'td-var ' + (diff < 0 ? 'worse' : 'better');
+}
+
+function calc() {
+  const preco  = parseFloat(document.getElementById('preco').value)    || 0;
+  const cmv    = parseFloat(document.getElementById('cmv').value)      || 0;
+  const frete  = parseFloat(document.getElementById('frete').value)    || 0;
+  const outros = parseFloat(document.getElementById('outros').value)   || 0;
+  const imp    = parseFloat(document.getElementById('imposto').value)  || 0;
+  const com    = parseFloat(document.getElementById('comissao').value) || 0;
+  const car    = parseFloat(document.getElementById('cartao').value)   || 0;
+  const camp   = parseFloat(document.getElementById('campanha').value) || 0;
+  const desc   = parseFloat(document.getElementById('desconto').value) || 0;
+  const cf     = parseFloat(document.getElementById('cf').value)       || 0;
+
+  // SEM DESCONTO
+  const v_imp  = preco * imp  / 100;
+  const v_com  = preco * com  / 100;
+  const v_car  = preco * car  / 100;
+  const v_camp = preco * camp / 100;
+  const total_cv = cmv + frete + outros + v_imp + v_com + v_car + v_camp;
+  const mcu      = preco - total_cv;
+  const mcu_pct  = preco > 0 ? mcu / preco * 100 : 0;
+
+  // COM DESCONTO
+  const preco_d   = preco * (1 - desc / 100);
+  const vd_imp    = preco_d * imp  / 100;
+  const vd_com    = preco_d * com  / 100;
+  const vd_car    = preco_d * car  / 100;
+  const vd_camp   = preco_d * camp / 100;
+  const total_cv_d = cmv + frete + outros + vd_imp + vd_com + vd_car + vd_camp;
+  const mcu_d     = preco_d - total_cv_d;
+  const mcu_d_pct = preco_d > 0 ? mcu_d / preco_d * 100 : 0;
+
+  // PE
+  const pe_un   = mcu   > 0 ? cf / mcu   : Infinity;
+  const pe_rs   = mcu   > 0 ? pe_un * preco   : Infinity;
+  const pe_d_un = mcu_d > 0 ? cf / mcu_d : Infinity;
+  const pe_d_rs = mcu_d > 0 ? pe_d_un * preco_d : Infinity;
+
+  // PREENCHE TABELA
+  document.getElementById('v_preco').textContent  = fmt(preco);
+  document.getElementById('vd_preco').textContent = fmt(preco_d);
+  setVarPrice('var_preco', preco, preco_d);
+
+  document.getElementById('v_cmv').textContent  = fmt(cmv);
+  document.getElementById('vd_cmv').textContent = fmt(cmv);
+  setVar('var_cmv', cmv, cmv, true);
+
+  document.getElementById('v_imp').textContent  = fmt(v_imp);
+  document.getElementById('vd_imp').textContent = fmt(vd_imp);
+  setVar('var_imp', v_imp, vd_imp);
+
+  document.getElementById('v_com').textContent  = fmt(v_com);
+  document.getElementById('vd_com').textContent = fmt(vd_com);
+  setVar('var_com', v_com, vd_com);
+
+  document.getElementById('v_car').textContent  = fmt(v_car);
+  document.getElementById('vd_car').textContent = fmt(vd_car);
+  setVar('var_car', v_car, vd_car);
+
+  document.getElementById('v_camp').textContent  = fmt(v_camp);
+  document.getElementById('vd_camp').textContent = fmt(vd_camp);
+  setVar('var_camp', v_camp, vd_camp);
+
+  document.getElementById('v_fre').textContent  = fmt(frete);
+  document.getElementById('vd_fre').textContent = fmt(frete);
+  setVar('var_fre', frete, frete, true);
+
+  document.getElementById('v_out').textContent  = fmt(outros);
+  document.getElementById('vd_out').textContent = fmt(outros);
+  setVar('var_out', outros, outros, true);
+
+  document.getElementById('v_total').textContent  = fmt(total_cv);
+  document.getElementById('vd_total').textContent = fmt(total_cv_d);
+  setVar('var_total', total_cv, total_cv_d);
+
+  // MCU
+  document.getElementById('mcu_val').textContent      = fmt(mcu);
+  document.getElementById('mcu_pct').textContent      = (Math.round(mcu_pct * 10) / 10).toFixed(1) + '% da receita';
+  document.getElementById('mcu_desc_val').textContent = fmt(mcu_d);
+  document.getElementById('mcu_desc_pct').textContent = (Math.round(mcu_d_pct * 10) / 10).toFixed(1) + '% com desconto';
+
+  const quedaMCU = mcu > 0 ? ((mcu - mcu_d) / mcu * 100) : 0;
+  const quedaEl = document.getElementById('mcu_queda');
+  quedaEl.textContent = (Math.round(quedaMCU * 10) / 10).toFixed(1) + '%';
+  quedaEl.style.color = mcu_d < mcu ? 'var(--red)' : 'var(--green)';
+
+  // PE
+  document.getElementById('pe_un').textContent      = isFinite(pe_un)   ? fmtN(pe_un)   + ' un' : '∞';
+  document.getElementById('pe_rs').textContent      = isFinite(pe_rs)   ? fmt(pe_rs)            : '∞';
+  document.getElementById('pe_desc_un').textContent = isFinite(pe_d_un) ? fmtN(pe_d_un) + ' un' : '∞';
+  document.getElementById('pe_desc_rs').textContent = isFinite(pe_d_rs) ? fmt(pe_d_rs)          : '∞';
+
+  // INSIGHT
+  const extraUn = isFinite(pe_d_un) && isFinite(pe_un) ? Math.ceil(pe_d_un - pe_un) : null;
+  let insight = '';
+  if (desc > 0 && mcu > 0) {
+    insight = `Um desconto de ${desc.toFixed(1)}% no preço derruba a MCU em ${quedaMCU.toFixed(1)}% — de ${fmt(mcu)} para ${fmt(mcu_d)} por unidade.`;
+    if (extraUn !== null && extraUn > 0)
+      insight += ` Para manter o mesmo resultado, você precisaria vender mais ${fmtN(extraUn)} unidades extras por mês.`;
+    if (mcu_d <= 0)
+      insight = `Com ${desc.toFixed(1)}% de desconto a empresa vende no prejuízo. Cada unidade vendida piora o caixa em ${fmt(Math.abs(mcu_d))}.`;
+  } else {
+    insight = `Sem desconto, cada unidade gera ${fmt(mcu)} de margem de contribuição (${mcu_pct.toFixed(1)}% do preço de venda).`;
+  }
+  document.getElementById('insightBox').textContent = insight;
+
+  // ── MIX VAREJO x ATACADO ─────────────────────────────────────────
+  const atk_desc = parseFloat(document.getElementById('atk_desc').value) || 0;
+  const atk_mix  = Math.min(100, Math.max(0, parseFloat(document.getElementById('atk_mix').value) || 0));
+  const var_mix  = 100 - atk_mix;
+
+  const preco_atk   = preco * (1 - atk_desc / 100);
+  const vd_imp_a    = preco_atk * imp  / 100;
+  const vd_com_a    = preco_atk * com  / 100;
+  const vd_car_a    = preco_atk * car  / 100;
+  const vd_camp_a   = preco_atk * camp / 100;
+  const total_cv_a  = cmv + frete + outros + vd_imp_a + vd_com_a + vd_car_a + vd_camp_a;
+  const mcu_atk_val = preco_atk - total_cv_a;
+  const mcu_atk_pct = preco_atk > 0 ? mcu_atk_val / preco_atk * 100 : 0;
+
+  // MCU ponderada do mix
+  const mcu_pond = (mcu * var_mix / 100) + (mcu_atk_val * atk_mix / 100);
+
+  // Unidades totais p/ fechar CF
+  const total_un_mix = mcu_pond > 0 ? cf / mcu_pond : Infinity;
+  const var_un  = total_un_mix * (var_mix / 100);
+  const atk_un  = total_un_mix * (atk_mix / 100);
+  const var_fat = var_un  * preco;
+  const atk_fat = atk_un * preco_atk;
+  const total_fat = var_fat + atk_fat;
+
+  document.getElementById('mix_preco_var').textContent   = fmt(preco);
+  document.getElementById('mix_atk_pct_label').textContent = atk_desc + '% desc.';
+  document.getElementById('mix_preco_atk').textContent   = fmt(preco_atk);
+  const mcu_atk_el = document.getElementById('mix_mcu_atk');
+  mcu_atk_el.textContent = fmt(mcu_atk_val);
+  mcu_atk_el.className   = 'mix-card-val ' + (mcu_atk_val >= 0 ? '' : 'rose');
+  document.getElementById('mix_mcu_atk_pct').textContent = (Math.round(mcu_atk_pct * 10)/10).toFixed(1) + '% da receita atacado';
+
+  document.getElementById('mix_var_pct').textContent  = var_mix.toFixed(0) + '%';
+  document.getElementById('mix_var_mcu').textContent  = fmt(mcu);
+  document.getElementById('mix_atk_pct_row').textContent = atk_mix.toFixed(0) + '%';
+  document.getElementById('mix_atk_mcu').textContent  = fmt(mcu_atk_val);
+  document.getElementById('mix_mcu_pond').textContent = mcu_pond > 0 ? fmt(mcu_pond) : '—';
+
+  document.getElementById('mix_var_un').textContent   = isFinite(var_un)      ? fmtN(var_un)      + ' un' : '∞';
+  document.getElementById('mix_atk_un').textContent   = isFinite(atk_un)      ? fmtN(atk_un)      + ' un' : '∞';
+  document.getElementById('mix_total_un').textContent = isFinite(total_un_mix) ? fmtN(total_un_mix) + ' un' : '∞';
+  document.getElementById('mix_var_fat').textContent  = isFinite(var_fat)     ? fmt(var_fat)      : '∞';
+  document.getElementById('mix_atk_fat').textContent  = isFinite(atk_fat)     ? fmt(atk_fat)      : '∞';
+  document.getElementById('mix_total_fat').textContent= isFinite(total_fat)   ? fmt(total_fat)    : '∞';
+
+  // Badge saúde do mix
+  const badge = document.getElementById('mix_badge');
+  if (mcu_atk_val < 0) {
+    badge.textContent = '✕ Atacado no prejuízo';
+    badge.style.background = 'rgba(180,60,50,.4)';
+  } else if (mcu_atk_val < mcu * 0.4) {
+    badge.textContent = '⚠ Margem atacado baixa';
+    badge.style.background = 'rgba(200,160,60,.3)';
+  } else {
+    badge.textContent = '✔ Mix viável';
+    badge.style.background = 'rgba(255,255,255,.22)';
+  }
+
+  // Insight mix
+  let mix_insight = '';
+  if (mcu_atk_val < 0) {
+    mix_insight = 'Com ' + atk_desc.toFixed(1) + '% de desconto, o atacado opera no prejuízo (MCU negativa). Reduza o desconto ou revise os custos antes de vender nesse canal.';
+  } else if (!isFinite(total_un_mix)) {
+    mix_insight = 'Preencha os custos fixos e os preços para calcular o balanço do mix.';
+  } else {
+    mix_insight = 'Com ' + var_mix.toFixed(0) + '% varejo e ' + atk_mix.toFixed(0) + '% atacado, a MCU ponderada é ' + fmt(mcu_pond) +
+      ' por unidade. Você precisa vender ' + fmtN(var_un) + ' un. no varejo e ' + fmtN(atk_un) +
+      ' un. no atacado por mês para cobrir os custos fixos de ' + fmt(cf) + '.';
+    if (mcu_atk_val < mcu * 0.5)
+      mix_insight += ' Atenção: a MCU no atacado (' + fmt(mcu_atk_val) + ') é menos da metade do varejo (' + fmt(mcu) + '). Avalie se o volume compensa.';
+  }
+  document.getElementById('mix_insight').textContent = mix_insight;
+
+}
+
+calc();
+</script>
+</body>
+</html>
