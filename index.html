@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Rk. by Mudiflow — Ferramentas Financeiras</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--rose:#C49A8A;--rose-dark:#9e7060;--rose-light:#e8d4cc;--rose-panel:#f5ece8;--rose-panelborder:#e0c8bf;--bg:#F5EDE3;--white:#FFFFFF;--text:#2a2a2a;--muted:#9e8e86;--border:#ddd0c8;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+.top-banner{background:var(--rose);padding:.55rem;text-align:center;font-size:.75rem;font-weight:500;color:#fff;letter-spacing:.12em;}
+header{background:var(--white);border-bottom:1px solid var(--border);padding:1.4rem 2.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;}
+.logo{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;color:var(--text);letter-spacing:-.02em;line-height:1;}
+.logo .dot{color:var(--rose);}
+.logo-sub{font-size:.62rem;font-weight:400;color:var(--muted);letter-spacing:.18em;text-transform:uppercase;margin-top:.25rem;}
+.author{font-size:.68rem;color:var(--muted);text-align:right;}
+.author strong{color:var(--rose-dark);display:block;font-size:.76rem;font-weight:600;letter-spacing:.04em;}
+.hero{max-width:860px;margin:3rem auto 2rem;padding:0 1.5rem;text-align:center;}
+.hero-eyebrow{font-size:.68rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--rose);margin-bottom:.75rem;}
+.hero-title{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:600;color:var(--text);line-height:1.25;margin-bottom:.85rem;}
+.hero-desc{font-size:.85rem;color:var(--muted);line-height:1.8;font-weight:300;max-width:520px;margin:0 auto;}
+.divider{width:40px;height:1px;background:var(--rose);margin:1.75rem auto;}
+.section-label{text-align:center;font-size:.65rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:1.5rem;}
+.cards{max-width:860px;margin:0 auto;padding:0 1.5rem;display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;}
+.card{background:var(--white);border:1px solid var(--rose-panelborder);overflow:hidden;display:flex;flex-direction:column;text-decoration:none;color:inherit;transition:border-color .2s,box-shadow .2s;}
+.card:hover{border-color:var(--rose);box-shadow:0 4px 24px rgba(196,154,138,.18);}
+.card-num{background:var(--rose-panel);border-bottom:1px solid var(--rose-panelborder);padding:.6rem 1.1rem;display:flex;align-items:center;gap:.65rem;}
+.card-num-badge{font-size:.62rem;font-weight:700;letter-spacing:.1em;color:var(--rose-dark);text-transform:uppercase;}
+.card-num-icon{font-size:1rem;line-height:1;}
+.card-body{padding:1.25rem 1.1rem 1rem;flex:1;display:flex;flex-direction:column;}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600;color:var(--text);margin-bottom:.5rem;line-height:1.25;}
+.card-desc{font-size:.75rem;color:var(--muted);line-height:1.7;font-weight:300;flex:1;margin-bottom:1rem;}
+.card-tags{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:1.1rem;}
+.tag{font-size:.6rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;padding:.2rem .6rem;background:var(--rose-panel);border:1px solid var(--rose-panelborder);color:var(--muted);}
+.card-cta{display:flex;align-items:center;justify-content:space-between;padding:.65rem 1.1rem;background:var(--rose-panel);border-top:1px solid var(--rose-panelborder);font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--rose-dark);transition:background .2s;}
+.card:hover .card-cta{background:var(--rose-light);}
+.card-cta-arrow{font-size:.9rem;}
+.card-new{display:inline-block;font-size:.58rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.15rem .55rem;background:var(--rose);color:#fff;margin-left:.5rem;vertical-align:middle;}
+footer{margin-top:auto;text-align:center;padding:2rem;font-size:.7rem;color:var(--muted);border-top:1px solid var(--border);letter-spacing:.06em;}
+footer strong{color:var(--rose-dark);}
+@media(max-width:680px){
+  .cards{grid-template-columns:1fr;}
+  header{padding:1rem 1.25rem;}
+  .author{display:none;}
+  .hero{margin:2rem auto 1.5rem;}
+  .hero-title{font-size:1.65rem;}
+}
+</style>
+</head>
+<body>
+<div class="top-banner">Ferramentas de Estratégia Financeira para PMEs</div>
+<header>
+  <div>
+    <div class="logo">Rk<span class="dot">.</span> <span style="font-size:1rem;font-weight:300;color:var(--muted);letter-spacing:.02em;">by Mudiflow</span></div>
+    <div class="logo-sub">Estratégia Financeira para PMEs</div>
+  </div>
+  <div class="author"><strong>por Elaine Lima</strong>Consultoria &amp; Estratégia Financeira</div>
+</header>
+
+<div class="hero">
+  <div class="hero-eyebrow">Calculadoras Financeiras</div>
+  <div class="hero-title">Escolha a ferramenta certa<br>para a sua análise</div>
+  <div class="hero-desc">Três calculadoras desenvolvidas para apoiar decisões financeiras em pequenas e médias empresas — do preço de venda ao planejamento da coleção.</div>
+  <div class="divider"></div>
+</div>
+
+<div class="section-label">selecione uma calculadora</div>
+
+<div class="cards">
+  <a class="card" href="rk-mudiflow-precificacao.html">
+    <div class="card-num">
+      <div class="card-num-icon">💰</div>
+      <div class="card-num-badge">01 · Precificação</div>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Simulador de Precificação</div>
+      <div class="card-desc">Calcule o preço mínimo e o preço sugerido para produtos ou serviços. Simule o impacto de descontos, descubra seu ponto de equilíbrio e analise se o frete grátis é viável para o seu produto.</div>
+      <div class="card-tags">
+        <span class="tag">Produto</span>
+        <span class="tag">Serviço</span>
+        <span class="tag">Markup</span>
+        <span class="tag">Atacado</span>
+        <span class="tag">PE</span>
+        <span class="tag">Frete grátis</span>
+      </div>
+    </div>
+    <div class="card-cta">Abrir calculadora <span class="card-cta-arrow">→</span></div>
+  </a>
+
+  <a class="card" href="rk-mudiflow-mcu.html">
+    <div class="card-num">
+      <div class="card-num-icon">📊</div>
+      <div class="card-num-badge">02 · MCU</div>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Calculadora de MCU</div>
+      <div class="card-desc">Analise a Margem de Contribuição Unitária com e sem desconto em uma tabela comparativa completa. Simule o impacto real do desconto na sua margem e descubra se o frete grátis é saudável para a operação.</div>
+      <div class="card-tags">
+        <span class="tag">MCU</span>
+        <span class="tag">Desconto</span>
+        <span class="tag">Varejo</span>
+        <span class="tag">PE</span>
+        <span class="tag">Frete grátis</span>
+      </div>
+    </div>
+    <div class="card-cta">Abrir calculadora <span class="card-cta-arrow">→</span></div>
+  </a>
+
+  <a class="card" href="rk-mudiflow-colecao.html">
+    <div class="card-num">
+      <div class="card-num-icon">👗</div>
+      <div class="card-num-badge">03 · Coleção</div>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Mix de Coleção</div>
+      <div class="card-desc">Monte a sua coleção produto a produto e veja o resumo completo do mix: faturamento, margem média, ponto de equilíbrio, lucro estimado e budget de investimento em estoque.</div>
+      <div class="card-tags">
+        <span class="tag">Coleção</span>
+        <span class="tag">Mix</span>
+        <span class="tag">Budget</span>
+        <span class="tag">Margem</span>
+        <span class="tag">Lucro</span>
+      </div>
+    </div>
+    <div class="card-cta">Abrir calculadora <span class="card-cta-arrow">→</span></div>
+  </a>
+</div>
+
+<footer>
+  <strong>Rk. by Mudiflow</strong> &nbsp;·&nbsp; por Elaine Lima &nbsp;·&nbsp; Estratégia Financeira para PMEs
+</footer>
+</body>
+</html>
