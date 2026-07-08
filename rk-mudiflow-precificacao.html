@@ -209,38 +209,38 @@ header{padding:1rem 1.25rem;}
 <div class="panel-title"><span class="dot-acc"></span><span id="painel_titulo">Produto</span></div>
 <div class="field campo-produto" id="campo_cmv">
 <div class="field-label">Custo do produto<small>CMV — valor pago pelo produto + frete de compra</small></div>
-<div class="iw"><span class="ip">R$</span><input type="number" id="custo" value="60" min="0" step="0.01" oninput="calc()"></div>
+<div class="iw"><span class="ip">R$</span><input type="number" id="custo" value="0" min="0" step="0.01" oninput="calc()"></div>
 </div>
 <div class="field campo-servico" id="campo_hora">
 <div class="field-label">Custo da hora do profissional<small>Salário + encargos ÷ horas trabalhadas no mês</small></div>
-<div class="iw"><span class="ip">R$</span><input type="number" id="custo_hora" value="30" min="0" step="0.01" oninput="calc()"></div>
+<div class="iw"><span class="ip">R$</span><input type="number" id="custo_hora" value="0" min="0" step="0.01" oninput="calc()"></div>
 </div>
 <div class="field campo-servico" id="campo_horas">
 <div class="field-label">Horas do serviço<small>Tempo total dedicado a cada entrega</small></div>
-<div class="iw"><input type="number" id="horas" value="2" min="0" step="0.5" oninput="calc()"><span class="ip">h</span></div>
+<div class="iw"><input type="number" id="horas" value="0" min="0" step="0.5" oninput="calc()"><span class="ip">h</span></div>
 </div>
 <div class="field campo-servico" id="campo_materiais">
 <div class="field-label">Materiais / insumos<small>Custo direto de materiais por entrega</small></div>
-<div class="iw"><span class="ip">R$</span><input type="number" id="materiais" value="10" min="0" step="0.01" oninput="calc()"></div>
+<div class="iw"><span class="ip">R$</span><input type="number" id="materiais" value="0" min="0" step="0.01" oninput="calc()"></div>
 </div>
 <div class="field">
 <div class="field-label">Margem desejada<small id="margem_ref">Recomendado: 30–50% para produto</small></div>
-<div class="iw"><input type="number" id="margem" value="35" min="1" max="99" step="0.5" oninput="calc()"><span class="ip">%</span></div>
+<div class="iw"><input type="number" id="margem" value="0" min="0" max="99" step="0.5" oninput="calc()"><span class="ip">%</span></div>
 </div>
 </div>
 <div class="panel">
 <div class="panel-title"><span class="dot-acc"></span>Custos variáveis em %</div>
 <div class="field">
 <div class="field-label">Imposto sobre venda<small>Simples Nacional, ISS, ICMS — incide sobre o faturamento</small></div>
-<div class="iw"><input type="number" id="imposto" value="8" min="0" max="30" step="0.1" oninput="calc()"><span class="ip">%</span></div>
+<div class="iw"><input type="number" id="imposto" value="0" min="0" max="30" step="0.1" oninput="calc()"><span class="ip">%</span></div>
 </div>
 <div class="field">
 <div class="field-label">Comissão de vendedor<small>% pago ao vendedor sobre cada venda realizada</small></div>
-<div class="iw"><input type="number" id="comissao" value="5" min="0" max="30" step="0.1" oninput="calc()"><span class="ip">%</span></div>
+<div class="iw"><input type="number" id="comissao" value="0" min="0" max="30" step="0.1" oninput="calc()"><span class="ip">%</span></div>
 </div>
 <div class="field">
 <div class="field-label">Taxa do cartão<small>Percentual cobrado pela operadora a cada transação</small></div>
-<div class="iw"><input type="number" id="cartao" value="3" min="0" max="10" step="0.1" oninput="calc()"><span class="ip">%</span></div>
+<div class="iw"><input type="number" id="cartao" value="0" min="0" max="10" step="0.1" oninput="calc()"><span class="ip">%</span></div>
 </div>
 <div class="field">
 <div class="field-label">Outros<small>Campanhas de marketing, marketplace, anúncios, etc.</small></div>
@@ -251,11 +251,11 @@ header{padding:1rem 1.25rem;}
 <div class="panel-title"><span class="dot-acc"></span>Custos variáveis em R$</div>
 <div class="field">
 <div class="field-label">Frete de entrega<small>Valor do frete subsidiado por você em cada venda</small></div>
-<div class="iw"><span class="ip">R$</span><input type="number" id="frete" value="8" min="0" step="0.01" oninput="calc()"></div>
+<div class="iw"><span class="ip">R$</span><input type="number" id="frete" value="0" min="0" step="0.01" oninput="calc()"></div>
 </div>
 <div class="field">
 <div class="field-label">Embalagem / outros<small>Custo de caixa, sacola, fita, papel seda — por unidade</small></div>
-<div class="iw"><span class="ip">R$</span><input type="number" id="embal" value="2" min="0" step="0.01" oninput="calc()"></div>
+<div class="iw"><span class="ip">R$</span><input type="number" id="embal" value="0" min="0" step="0.01" oninput="calc()"></div>
 </div>
 </div>
 <div class="panel">
@@ -266,7 +266,7 @@ header{padding:1rem 1.25rem;}
 </div>
 <div class="field" id="row_atacado">
 <div class="field-label">Desconto atacado<small>% aplicado sobre o preço cheio para venda em quantidade</small></div>
-<div class="iw"><input type="number" id="atacado" value="30" min="0" max="80" step="0.5" oninput="calc()"><span class="ip">%</span></div>
+<div class="iw"><input type="number" id="atacado" value="0" min="0" max="80" step="0.5" oninput="calc()"><span class="ip">%</span></div>
 </div>
 </div>
 </div>
@@ -342,7 +342,7 @@ header{padding:1rem 1.25rem;}
 <div class="pe-title"><span style="width:5px;height:5px;border-radius:50%;background:var(--rose);display:inline-block;"></span>Ponto de equilíbrio</div>
 <div class="pe-fixed-wrap">
 <label>Custos fixos mensais:</label>
-<div class="iw" style="min-width:140px"><span class="ip">R$</span><input type="number" id="cf" value="10000" min="0" step="100" oninput="calc()"></div>
+<div class="iw" style="min-width:140px"><span class="ip">R$</span><input type="number" id="cf" value="0" min="0" step="100" oninput="calc()"></div>
 <span style="font-size:.72rem;color:var(--muted);font-weight:300;">Aluguel, salários, contador, softwares — tudo que você paga independente das vendas.</span>
 </div>
 <div class="pe-grid">
@@ -365,18 +365,18 @@ header{padding:1rem 1.25rem;}
 <div class="fg-col-title">Custo real do frete</div>
 <div class="fg-field">
 <div class="fg-field-label">Custo do frete por pedido<small>Valor real cobrado pela transportadora</small></div>
-<div class="iw"><span class="ip">R$</span><input type="number" id="fg_frete" value="18" min="0" step="0.01" oninput="calcFG()"></div>
+<div class="iw"><span class="ip">R$</span><input type="number" id="fg_frete" value="0" min="0" step="0.01" oninput="calcFG()"></div>
 </div>
 <div class="fg-field">
 <div class="fg-field-label">Volume mensal de pedidos<small>Quantos pedidos você envia por mês</small></div>
-<div class="iw"><input type="number" id="fg_volume" value="100" min="1" step="1" oninput="calcFG()"><span class="ip">un</span></div>
+<div class="iw"><input type="number" id="fg_volume" value="0" min="0" step="1" oninput="calcFG()"><span class="ip">un</span></div>
 </div>
 </div>
 <div class="fg-col">
 <div class="fg-col-title">Referência</div>
 <div class="fg-field">
 <div class="fg-field-label">Margem mínima saudável<small>Abaixo disso é sinal de alerta</small></div>
-<div class="iw"><input type="number" id="fg_min_margem" value="30" min="0" max="100" step="0.5" oninput="calcFG()"><span class="ip">%</span></div>
+<div class="iw"><input type="number" id="fg_min_margem" value="0" min="0" max="100" step="0.5" oninput="calcFG()"><span class="ip">%</span></div>
 </div>
 <div class="fg-field" style="border-bottom:none;">
 <div class="fg-field-label" style="font-size:.72rem;color:var(--muted);font-weight:300;">Os demais valores (custo, impostos, comissão, cartão, embalagem) são lidos automaticamente da calculadora acima.</div>

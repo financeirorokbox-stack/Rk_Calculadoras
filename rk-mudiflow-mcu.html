@@ -245,18 +245,18 @@ header{padding:1rem 1.25rem;}
 <div class="panel-title"><span class="dot-acc"></span>Receita</div>
 <div class="field">
 <div class="field-label">Preço de venda<small>Valor cobrado ao cliente por unidade</small></div>
-<div class="iw"><span class="ip">R$</span><input type="number" id="preco" value="150" min="0" step="0.01" oninput="calc()"></div>
+<div class="iw"><span class="ip">R$</span><input type="number" id="preco" value="0" min="0" step="0.01" oninput="calc()"></div>
 </div>
 </div>
 <div class="panel">
 <div class="panel-title"><span class="dot-acc"></span>Custos variáveis em R$</div>
 <div class="field">
 <div class="field-label">Custo do produto / CMV<small>Incluir frete de compra</small></div>
-<div class="iw"><span class="ip">R$</span><input type="number" id="cmv" value="65" min="0" step="0.01" oninput="calc()"></div>
+<div class="iw"><span class="ip">R$</span><input type="number" id="cmv" value="0" min="0" step="0.01" oninput="calc()"></div>
 </div>
 <div class="field">
 <div class="field-label">Frete de venda<small>Valor subsidiado pela empresa</small></div>
-<div class="iw"><span class="ip">R$</span><input type="number" id="frete" value="8" min="0" step="0.01" oninput="calc()"></div>
+<div class="iw"><span class="ip">R$</span><input type="number" id="frete" value="0" min="0" step="0.01" oninput="calc()"></div>
 </div>
 <div class="field">
 <div class="field-label">Outros custos variáveis</div>
@@ -270,26 +270,26 @@ header{padding:1rem 1.25rem;}
 <div class="panel-title"><span class="dot-acc"></span>Custos variáveis em %</div>
 <div class="field">
 <div class="field-label">Imposto sobre venda<small>Simples Nacional, ISS, ICMS</small></div>
-<div class="iw"><input type="number" id="imposto" value="8" min="0" max="100" step="0.1" oninput="calc()"><span class="ip">%</span></div>
+<div class="iw"><input type="number" id="imposto" value="0" min="0" max="100" step="0.1" oninput="calc()"><span class="ip">%</span></div>
 </div>
 <div class="field">
 <div class="field-label">Comissão de vendedor<small>% pago sobre cada venda realizada</small></div>
-<div class="iw"><input type="number" id="comissao" value="5" min="0" max="100" step="0.1" oninput="calc()"><span class="ip">%</span></div>
+<div class="iw"><input type="number" id="comissao" value="0" min="0" max="100" step="0.1" oninput="calc()"><span class="ip">%</span></div>
 </div>
 <div class="field">
 <div class="field-label">Taxa do cartão<small>Percentual cobrado pela operadora</small></div>
-<div class="iw"><input type="number" id="cartao" value="3" min="0" max="100" step="0.1" oninput="calc()"><span class="ip">%</span></div>
+<div class="iw"><input type="number" id="cartao" value="0" min="0" max="100" step="0.1" oninput="calc()"><span class="ip">%</span></div>
 </div>
 <div class="field">
 <div class="field-label">Campanha / tráfego pago<small>% investido em marketing por venda</small></div>
-<div class="iw"><input type="number" id="campanha" value="6" min="0" max="100" step="0.1" oninput="calc()"><span class="ip">%</span></div>
+<div class="iw"><input type="number" id="campanha" value="0" min="0" max="100" step="0.1" oninput="calc()"><span class="ip">%</span></div>
 </div>
 </div>
 <div class="panel">
 <div class="panel-title"><span class="dot-acc"></span>Ponto de equilíbrio</div>
 <div class="field">
 <div class="field-label">Custos fixos mensais<small>Aluguel, salários, contador, softwares</small></div>
-<div class="iw"><span class="ip">R$</span><input type="number" id="cf" value="10000" min="0" step="100" oninput="calc()"></div>
+<div class="iw"><span class="ip">R$</span><input type="number" id="cf" value="0" min="0" step="100" oninput="calc()"></div>
 </div>
 </div>
 </div>
@@ -299,7 +299,7 @@ header{padding:1rem 1.25rem;}
 <div class="panel-title"><span class="dot-acc"></span>Simulação de desconto</div>
 <div class="field">
 <div class="field-label">Desconto concedido ao cliente<small>Todos os custos recalculados automaticamente na tabela abaixo</small></div>
-<div class="iw"><input type="number" id="desconto" value="10" min="0" max="100" step="0.1" oninput="calc()" style="color:var(--rose-dark)"><span class="ip" style="color:var(--rose-dark)">%</span></div>
+<div class="iw"><input type="number" id="desconto" value="0" min="0" max="100" step="0.1" oninput="calc()" style="color:var(--rose-dark)"><span class="ip" style="color:var(--rose-dark)">%</span></div>
 </div>
 </div>
 <!-- TABELA -->
@@ -370,18 +370,18 @@ header{padding:1rem 1.25rem;}
 <div class="fg-col-title">Custo real do frete</div>
 <div class="fg-field">
 <div class="fg-field-label">Custo do frete por pedido<small>Valor cobrado pela transportadora</small></div>
-<div class="iw"><span class="ip">R$</span><input type="number" id="fg_frete" value="18" min="0" step="0.01" oninput="calcFG()"></div>
+<div class="iw"><span class="ip">R$</span><input type="number" id="fg_frete" value="0" min="0" step="0.01" oninput="calcFG()"></div>
 </div>
 <div class="fg-field">
 <div class="fg-field-label">Volume mensal de pedidos<small>Quantos pedidos você envia por mês</small></div>
-<div class="iw"><input type="number" id="fg_volume" value="100" min="1" step="1" oninput="calcFG()"><span class="ip">un</span></div>
+<div class="iw"><input type="number" id="fg_volume" value="0" min="0" step="1" oninput="calcFG()"><span class="ip">un</span></div>
 </div>
 </div>
 <div class="fg-col">
 <div class="fg-col-title">Referência de margem</div>
 <div class="fg-field">
 <div class="fg-field-label">Margem mínima saudável<small>Abaixo disso acende o alerta</small></div>
-<div class="iw"><input type="number" id="fg_min_margem" value="30" min="0" max="100" step="0.5" oninput="calcFG()"><span class="ip">%</span></div>
+<div class="iw"><input type="number" id="fg_min_margem" value="0" min="0" max="100" step="0.5" oninput="calcFG()"><span class="ip">%</span></div>
 </div>
 <div class="fg-field" style="border-bottom:none;">
 <div class="fg-field-label" style="font-size:.72rem;color:var(--muted);font-weight:300;line-height:1.55;">CMV, impostos, comissão, cartão e campanha são lidos automaticamente da calculadora acima.</div>
