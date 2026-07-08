@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Simulador de Precificação — Rk. by Mudiflow</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+--rose:#C49A8A; --rose-dark:#9e7060; --rose-light:#e8d4cc;
+--rose-panel:#f5ece8; --rose-panelborder:#e0c8bf;
+--bg:#F5EDE3; --white:#FFFFFF; --text:#2a2a2a;
+--muted:#9e8e86; --border:#ddd0c8;
+--green:#7aab7a; --red:#c96b5e; --yellow:#c9a85e;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:3rem;}
+.top-banner{background:var(--rose);padding:.55rem;text-align:center;font-size:.75rem;font-weight:500;color:#fff;letter-spacing:.12em;}
+header{background:var(--white);border-bottom:1px solid var(--border);padding:1.1rem 2.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;}
+.logo{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:600;color:var(--text);letter-spacing:-.02em;line-height:1;}
+.logo .dot{color:var(--rose);}
+.logo-sub{font-size:.62rem;font-weight:400;color:var(--muted);letter-spacing:.18em;text-transform:uppercase;margin-top:.25rem;}
+.author{font-size:.68rem;color:var(--muted);text-align:right;}
+.author strong{color:var(--rose-dark);display:block;font-size:.76rem;font-weight:600;letter-spacing:.04em;}
+.tipo-bar{background:var(--white);border-bottom:1px solid var(--border);padding:.7rem 2.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
+.tipo-label{font-size:.72rem;color:var(--muted);font-weight:500;letter-spacing:.06em;text-transform:uppercase;}
+.tipo-btns{display:flex;gap:.5rem;}
+.tipo-btn{padding:.45rem 1.4rem;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Montserrat',sans-serif;font-size:.75rem;font-weight:500;cursor:pointer;letter-spacing:.08em;text-transform:uppercase;transition:all .2s;}
+.tipo-btn.active{background:var(--rose);border-color:var(--rose);color:#fff;}
+.tipo-btn:hover:not(.active){border-color:var(--rose);color:var(--rose);}
+.ref-box{margin-left:auto;background:var(--rose-panel);border:1px solid var(--rose-panelborder);padding:.38rem .9rem;font-size:.72rem;color:var(--muted);}
+.ref-box strong{color:var(--rose-dark);}
+.filtro-wrap{display:flex;align-items:center;gap:.5rem;margin-left:1rem;}
+.filtro-wrap label{font-size:.68rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;}
+.filtro-select{font-family:'Montserrat',sans-serif;font-size:.75rem;color:var(--muted);border:1px solid var(--border);background:var(--white);padding:.3rem .6rem;cursor:pointer;outline:none;appearance:none;-webkit-appearance:none;padding-right:1.4rem;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%239e8e86'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .5rem center;}
+.filtro-select:focus{border-color:var(--rose);}
+.main{max-width:940px;margin:0 auto;padding:2rem 1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start;}
+.panel{background:var(--rose-panel);border:1px solid var(--rose-panelborder);overflow:hidden;}
+.panel-title{padding:.8rem 1.25rem;font-size:.65rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--rose-panelborder);display:flex;align-items:center;gap:.5rem;}
+.dot-acc{width:5px;height:5px;border-radius:50%;background:var(--rose);flex-shrink:0;}
+.field{display:flex;align-items:center;justify-content:space-between;padding:.6rem 1.25rem;border-bottom:1px solid var(--rose-panelborder);gap:.75rem;}
+.field:last-child{border-bottom:none;}
+.field-label{font-size:.8rem;color:var(--text);flex:1;line-height:1.3;font-weight:400;}
+.field-label small{display:block;font-size:.68rem;color:var(--muted);margin-top:.1rem;font-weight:300;}
+.iw{display:flex;align-items:center;background:var(--white);border:1px solid var(--rose-panelborder);overflow:hidden;min-width:105px;transition:border-color .2s;}
+.iw:focus-within{border-color:var(--rose);}
+.ip{padding:.42rem .35rem .42rem .7rem;font-size:.74rem;color:var(--muted);white-space:nowrap;}
+input[type=number]{background:transparent;border:none;outline:none;color:var(--text);font-size:.84rem;width:62px;padding:.42rem .55rem .42rem 0;text-align:right;}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;}
+.results-col{display:flex;flex-direction:column;gap:1.25rem;}
+.bk-row{display:flex;justify-content:space-between;align-items:center;padding:.58rem 1.25rem;border-bottom:1px solid var(--rose-panelborder);font-size:.8rem;gap:.5rem;}
+.bk-row:last-child{border-bottom:none;}
+.bk-label{color:var(--text);flex:1;font-weight:400;}
+.bk-label small{font-size:.67rem;color:var(--muted);}
+.bk-val{font-size:.82rem;font-weight:500;text-align:right;color:var(--red);}
+.bk-row.tot{background:var(--rose-light);}
+.bk-row.tot .bk-label{font-weight:600;}
+.bk-row.tot .bk-val{color:var(--rose-dark);font-size:.88rem;}
+.preco-block{background:var(--white);border:1.5px solid var(--rose);overflow:hidden;grid-column:1/-1;}
+.preco-header{background:var(--rose);padding:.75rem 1.25rem;display:flex;align-items:center;justify-content:space-between;}
+.preco-header-title{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:600;color:#fff;letter-spacing:.04em;}
+.preco-badge{font-size:.68rem;font-weight:600;padding:.2rem .75rem;background:rgba(255,255,255,.22);color:#fff;letter-spacing:.06em;}
+.preco-grid{display:grid;grid-template-columns:1fr 1fr 1fr;}
+.preco-item{padding:1.1rem 1.5rem;border-right:1px solid var(--border);border-bottom:1px solid var(--border);}
+.preco-item:nth-child(3){border-right:none;}
+.preco-row2{display:grid;grid-template-columns:1fr 1fr 1fr;}
+.preco-row2 .preco-item{border-bottom:none;}
+.preco-row2 .preco-item:nth-child(3){border-right:none;}
+.preco-item-label{font-size:.63rem;color:var(--muted);text-transform:uppercase;letter-spacing:.09em;margin-bottom:.3rem;font-weight:500;display:flex;align-items:center;gap:.35rem;}
+.preco-item-val{font-size:1.1rem;font-weight:500;color:var(--text);}
+.preco-item-val.big{font-size:1.6rem;color:var(--rose-dark);}
+.preco-item-val.green{color:var(--green);}
+.preco-item-val.red{color:var(--red);}
+.insight-box{background:var(--rose-panel);border-top:1px solid var(--rose-panelborder);padding:.9rem 1.25rem;font-size:.78rem;color:var(--muted);line-height:1.65;font-weight:300;}
+.alerta{background:#fdecea;border-top:1px solid #f5c6c2;padding:.85rem 1.25rem;font-size:.78rem;color:var(--red);line-height:1.6;display:none;}
+.tip{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:var(--rose-light);border:1px solid var(--rose);color:var(--rose-dark);font-size:.6rem;font-weight:700;cursor:pointer;position:relative;flex-shrink:0;line-height:1;}
+.tip-box{display:none;position:fixed;background:var(--white);border:1px solid var(--rose-panelborder);box-shadow:0 4px 18px rgba(0,0,0,.13);padding:.75rem 1rem;font-size:.73rem;color:var(--text);line-height:1.55;width:240px;z-index:9999;font-weight:400;text-transform:none;letter-spacing:0;}
+.tip-box.visible{display:block;}
+.tip-title{font-weight:600;color:var(--rose-dark);margin-bottom:.3rem;font-size:.74rem;}
+.pe-panel{background:var(--rose-panel);border:1px solid var(--rose-panelborder);padding:1.25rem;grid-column:1/-1;}
+.pe-title{font-size:.65rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;}
+.pe-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:.5rem;}
+.pe-card{background:var(--white);border:1px solid var(--rose-panelborder);padding:.95rem 1rem;}
+.pe-card-label{font-size:.66rem;color:var(--muted);margin-bottom:.35rem;letter-spacing:.05em;text-transform:uppercase;font-weight:500;display:flex;align-items:center;gap:.35rem;}
+.pe-card-val{font-size:.98rem;font-weight:500;color:var(--text);}
+.pe-card-sub{font-size:.66rem;color:var(--muted);margin-top:.18rem;}
+.pe-fixed-wrap{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;flex-wrap:wrap;}
+.pe-fixed-wrap label{font-size:.8rem;color:var(--text);}
+
+/* ── BLOCO FRETE GRÁTIS ── */
+.fg-block{background:var(--white);border:1.5px solid var(--rose-dark);overflow:hidden;grid-column:1/-1;}
+.fg-header{background:var(--rose-dark);padding:.75rem 1.25rem;display:flex;align-items:center;justify-content:space-between;gap:.75rem;}
+.fg-header-title{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:600;color:#fff;letter-spacing:.04em;}
+.fg-toggle{font-family:'Montserrat',sans-serif;font-size:.68rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.85);background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);padding:.28rem .85rem;cursor:pointer;transition:all .2s;}
+.fg-toggle:hover{background:rgba(255,255,255,.25);}
+.fg-body{display:none;}
+.fg-body.open{display:block;}
+.fg-inputs{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--rose-panelborder);}
+.fg-col{padding:1rem 1.25rem;border-right:1px solid var(--rose-panelborder);}
+.fg-col:last-child{border-right:none;}
+.fg-col-title{font-size:.62rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem;}
+.fg-field{display:flex;align-items:center;justify-content:space-between;padding:.45rem 0;border-bottom:1px solid var(--rose-panelborder);gap:.5rem;}
+.fg-field:last-child{border-bottom:none;}
+.fg-field-label{font-size:.76rem;color:var(--text);flex:1;}
+.fg-field-label small{display:block;font-size:.65rem;color:var(--muted);font-weight:300;}
+
+/* veredicto */
+.fg-verdict{padding:1rem 1.25rem;border-bottom:1px solid var(--rose-panelborder);display:flex;align-items:flex-start;gap:1rem;}
+.fg-verdict-badge{font-size:.68rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:.3rem .9rem;white-space:nowrap;flex-shrink:0;margin-top:.1rem;}
+.fg-verdict-badge.green{background:#eaf3de;color:#27500a;border:1px solid #639922;}
+.fg-verdict-badge.yellow{background:#faeeda;color:#633806;border:1px solid #ba7517;}
+.fg-verdict-badge.red{background:#fcebeb;color:#791f1f;border:1px solid #a32d2d;}
+.fg-verdict-text{font-size:.78rem;color:var(--muted);line-height:1.65;font-weight:300;}
+.fg-verdict-text strong{color:var(--text);font-weight:500;}
+
+/* kpis */
+.fg-kpis{display:grid;grid-template-columns:repeat(5,1fr);border-bottom:1px solid var(--rose-panelborder);}
+.fg-kpi{padding:.85rem 1rem;border-right:1px solid var(--rose-panelborder);text-align:center;}
+.fg-kpi:last-child{border-right:none;}
+.fg-kpi-label{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem;}
+.fg-kpi-val{font-size:.95rem;font-weight:500;color:var(--text);}
+.fg-kpi-val.green{color:var(--green);}
+.fg-kpi-val.yellow{color:var(--yellow);}
+.fg-kpi-val.red{color:var(--red);}
+
+/* barras */
+.fg-bars{padding:1rem 1.25rem;border-bottom:1px solid var(--rose-panelborder);}
+.fg-bars-title{font-size:.62rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem;}
+.fg-bar-row{margin-bottom:.55rem;}
+.fg-bar-meta{display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-bottom:.25rem;}
+.fg-bar-track{height:8px;background:var(--rose-panel);border-radius:20px;overflow:hidden;border:0.5px solid var(--rose-panelborder);}
+.fg-bar-fill{height:100%;border-radius:20px;transition:width .4s ease;}
+
+/* pontos de virada */
+.fg-pivot{display:grid;grid-template-columns:repeat(4,1fr);}
+.fg-pivot-item{padding:.85rem 1.1rem;border-right:1px solid var(--rose-panelborder);}
+.fg-pivot-item:last-child{border-right:none;}
+.fg-pivot-label{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem;}
+.fg-pivot-val{font-size:.9rem;font-weight:500;color:var(--text);}
+.fg-pivot-sub{font-size:.63rem;color:var(--muted);margin-top:.15rem;font-weight:300;}
+
+.glossario{max-width:940px;margin:0 auto 2rem;padding:0 1.5rem;}
+.glossario-header{background:var(--rose);padding:.75rem 1.25rem;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;}
+.glossario-header-title{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:600;color:#fff;letter-spacing:.04em;}
+.glossario-header-sub{font-size:.7rem;color:rgba(255,255,255,.8);letter-spacing:.06em;}
+.glossario-body{background:var(--white);border:1px solid var(--rose-panelborder);border-top:none;display:grid;grid-template-columns:1fr 1fr;gap:0;}
+.gitem{padding:1rem 1.25rem;border-bottom:1px solid var(--rose-panelborder);border-right:1px solid var(--rose-panelborder);}
+.gitem:nth-child(even){border-right:none;}
+.gitem:nth-last-child(-n+2){border-bottom:none;}
+.gitem-term{font-size:.72rem;font-weight:600;color:var(--rose-dark);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.3rem;}
+.gitem-def{font-size:.78rem;color:var(--text);line-height:1.6;font-weight:300;}
+.gitem-ex{font-size:.72rem;color:var(--muted);margin-top:.3rem;line-height:1.5;font-style:italic;}
+footer{text-align:center;padding:1.5rem;font-size:.7rem;color:var(--muted);border-top:1px solid var(--border);max-width:940px;margin:0 auto;letter-spacing:.06em;}
+.campo-servico{display:none;}
+.campo-produto{display:flex;}
+@media(max-width:680px){
+.main{grid-template-columns:1fr;padding:1rem;gap:1rem;}
+.preco-grid{grid-template-columns:1fr 1fr;}
+.pe-grid{grid-template-columns:1fr 1fr;}
+header{padding:1rem 1.25rem;}
+.author{display:none;}
+.tipo-bar{padding:.6rem 1.25rem;}
+.glossario-body{grid-template-columns:1fr;}
+.gitem{border-right:none;}
+.gitem:nth-last-child(-n+2){border-bottom:1px solid var(--rose-panelborder);}
+.gitem:last-child{border-bottom:none;}
+.glossario{padding:0 1rem;}
+.fg-inputs{grid-template-columns:1fr;}
+.fg-col{border-right:none;border-bottom:1px solid var(--rose-panelborder);}
+.fg-kpis{grid-template-columns:1fr 1fr;}
+.fg-pivot{grid-template-columns:1fr 1fr;}
+}
+.btn-limpar{font-family:'Montserrat',sans-serif;font-size:.72rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:transparent;border:1px solid var(--border);padding:.4rem 1rem;cursor:pointer;transition:all .2s;}
+.btn-limpar:hover{border-color:var(--rose-dark);color:var(--rose-dark);}
+.btn-voltar{display:inline-flex;align-items:center;gap:.4rem;font-family:'Montserrat',sans-serif;font-size:.7rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-decoration:none;border:1px solid var(--border);padding:.38rem .9rem;transition:all .2s;background:transparent;}
+.btn-voltar:hover{border-color:var(--rose);color:var(--rose-dark);}
+</style>
+</head>
+<body>
+<div class="top-banner">Simulador de Precificação Estratégica</div>
+<header>
+<div>
+<div class="logo">Rk<span class="dot">.</span> <span style="font-size:1rem;font-weight:300;color:var(--muted);letter-spacing:.02em;">by Mudiflow</span></div>
+<div class="logo-sub">Estratégia Financeira para PMEs</div>
+</div>
+<div class="author"><strong>por Elaine Lima</strong>Consultoria &amp; Estratégia Financeira</div>
+</header>
+<div class="tipo-bar">
+<span class="tipo-label">Tipo de negócio</span>
+<div class="tipo-btns">
+<button class="tipo-btn active" id="btn_produto" onclick="setTipo('produto')">Produto</button>
+<button class="tipo-btn" id="btn_servico" style="display:none;" onclick="setTipo('servico')">Serviço</button>
+</div>
+<div class="ref-box">Margem saudável: <strong id="ref_margem">30% a 50%</strong> &nbsp;·&nbsp; Atenção abaixo de <strong id="ref_atencao">25%</strong></div>
+<div class="filtro-wrap">
+<label for="filtro_tipo">Modo</label>
+<select class="filtro-select" id="filtro_tipo" onchange="setModo(this.value)">
+<option value="produto">Somente Produto</option>
+<option value="ambos">Produto + Serviço</option>
+</select>
+</div>
+<button class="btn-limpar" onclick="limparCampos()">&#x2715; Limpar</button>
+<a class="btn-voltar" href="index.html">← Voltar</a>
+</div>
+<div class="main">
+<!-- COLUNA INPUTS -->
+<div style="display:flex;flex-direction:column;gap:1.25rem;">
+<div class="panel">
+<div class="panel-title"><span class="dot-acc"></span><span id="painel_titulo">Produto</span></div>
+<div class="field campo-produto" id="campo_cmv">
+<div class="field-label">Custo do produto<small>CMV — valor pago pelo produto + frete de compra</small></div>
+<div class="iw"><span class="ip">R$</span><input type="number" id="custo" value="60" min="0" step="0.01" oninput="calc()"></div>
+</div>
+<div class="field campo-servico" id="campo_hora">
+<div class="field-label">Custo da hora do profissional<small>Salário + encargos ÷ horas trabalhadas no mês</small></div>
+<div class="iw"><span class="ip">R$</span><input type="number" id="custo_hora" value="30" min="0" step="0.01" oninput="calc()"></div>
+</div>
+<div class="field campo-servico" id="campo_horas">
+<div class="field-label">Horas do serviço<small>Tempo total dedicado a cada entrega</small></div>
+<div class="iw"><input type="number" id="horas" value="2" min="0" step="0.5" oninput="calc()"><span class="ip">h</span></div>
+</div>
+<div class="field campo-servico" id="campo_materiais">
+<div class="field-label">Materiais / insumos<small>Custo direto de materiais por entrega</small></div>
+<div class="iw"><span class="ip">R$</span><input type="number" id="materiais" value="10" min="0" step="0.01" oninput="calc()"></div>
+</div>
+<div class="field">
+<div class="field-label">Margem desejada<small id="margem_ref">Recomendado: 30–50% para produto</small></div>
+<div class="iw"><input type="number" id="margem" value="35" min="1" max="99" step="0.5" oninput="calc()"><span class="ip">%</span></div>
+</div>
+</div>
+<div class="panel">
+<div class="panel-title"><span class="dot-acc"></span>Custos variáveis em %</div>
+<div class="field">
+<div class="field-label">Imposto sobre venda<small>Simples Nacional, ISS, ICMS — incide sobre o faturamento</small></div>
+<div class="iw"><input type="number" id="imposto" value="8" min="0" max="30" step="0.1" oninput="calc()"><span class="ip">%</span></div>
+</div>
+<div class="field">
+<div class="field-label">Comissão de vendedor<small>% pago ao vendedor sobre cada venda realizada</small></div>
+<div class="iw"><input type="number" id="comissao" value="5" min="0" max="30" step="0.1" oninput="calc()"><span class="ip">%</span></div>
+</div>
+<div class="field">
+<div class="field-label">Taxa do cartão<small>Percentual cobrado pela operadora a cada transação</small></div>
+<div class="iw"><input type="number" id="cartao" value="3" min="0" max="10" step="0.1" oninput="calc()"><span class="ip">%</span></div>
+</div>
+<div class="field">
+<div class="field-label">Outros<small>Campanhas de marketing, marketplace, anúncios, etc.</small></div>
+<div class="iw"><input type="number" id="outros_pct" value="0" min="0" max="50" step="0.1" oninput="calc()"><span class="ip">%</span></div>
+</div>
+</div>
+<div class="panel campo-produto" id="panel_fixos" style="display:block;">
+<div class="panel-title"><span class="dot-acc"></span>Custos variáveis em R$</div>
+<div class="field">
+<div class="field-label">Frete de entrega<small>Valor do frete subsidiado por você em cada venda</small></div>
+<div class="iw"><span class="ip">R$</span><input type="number" id="frete" value="8" min="0" step="0.01" oninput="calc()"></div>
+</div>
+<div class="field">
+<div class="field-label">Embalagem / outros<small>Custo de caixa, sacola, fita, papel seda — por unidade</small></div>
+<div class="iw"><span class="ip">R$</span><input type="number" id="embal" value="2" min="0" step="0.01" oninput="calc()"></div>
+</div>
+</div>
+<div class="panel">
+<div class="panel-title"><span class="dot-acc"></span>Simulações</div>
+<div class="field">
+<div class="field-label">Desconto concedido<small>Simule quanto sua margem cai ao dar desconto</small></div>
+<div class="iw"><input type="number" id="desconto" value="0" min="0" max="80" step="0.5" oninput="calc()" style="color:var(--rose-dark)"><span class="ip" style="color:var(--rose-dark)">%</span></div>
+</div>
+<div class="field" id="row_atacado">
+<div class="field-label">Desconto atacado<small>% aplicado sobre o preço cheio para venda em quantidade</small></div>
+<div class="iw"><input type="number" id="atacado" value="30" min="0" max="80" step="0.5" oninput="calc()"><span class="ip">%</span></div>
+</div>
+</div>
+</div>
+<!-- COLUNA RESULTADOS -->
+<div class="results-col">
+<div class="panel">
+<div class="panel-title"><span class="dot-acc"></span>Detalhamento por venda</div>
+<div class="bk-row"><div class="bk-label">Custo do produto</div><div class="bk-val" id="bk_custo">—</div></div>
+<div class="bk-row"><div class="bk-label">Frete de entrega + embalagem</div><div class="bk-val" id="bk_fixos">—</div></div>
+<div class="bk-row"><div class="bk-label">Impostos <small id="bk_imp_pct"></small></div><div class="bk-val" id="bk_imp">—</div></div>
+<div class="bk-row"><div class="bk-label">Comissão <small id="bk_com_pct"></small></div><div class="bk-val" id="bk_com">—</div></div>
+<div class="bk-row"><div class="bk-label">Taxa do cartão <small id="bk_car_pct"></small></div><div class="bk-val" id="bk_car">—</div></div>
+<div class="bk-row"><div class="bk-label">Outros <small id="bk_out_pct"></small></div><div class="bk-val" id="bk_out">—</div></div>
+<div class="bk-row tot"><div class="bk-label">Total custos variáveis</div><div class="bk-val" id="bk_total">—</div></div>
+</div>
+<div class="panel">
+<div class="panel-title"><span class="dot-acc"></span>Simulação de desconto e atacado</div>
+<div class="bk-row"><div class="bk-label">Preço sugerido (cheio)</div><div class="bk-val" style="color:var(--green)" id="sim_preco_cheio">—</div></div>
+<div class="bk-row"><div class="bk-label">Preço com desconto <small id="sim_desc_pct"></small></div><div class="bk-val" style="color:var(--rose)" id="sim_preco_desc">—</div></div>
+<div class="bk-row"><div class="bk-label">MCU com desconto</div><div class="bk-val" id="sim_mcu_desc">—</div></div>
+<div class="bk-row"><div class="bk-label">Queda na MCU</div><div class="bk-val" id="sim_queda_mcu">—</div></div>
+<div class="bk-row tot" id="sim_row_atk1"><div class="bk-label">Preço atacado <small id="sim_atk_pct"></small></div><div class="bk-val" style="color:var(--yellow)" id="sim_preco_atk">—</div></div>
+<div class="bk-row" id="sim_row_atk2"><div class="bk-label">MCU no atacado</div><div class="bk-val" id="sim_mcu_atk">—</div></div>
+<div class="bk-row" id="sim_row_atk3"><div class="bk-label" style="font-size:.72rem" id="sim_alerta_atk"></div><div></div></div>
+</div>
+</div>
+<!-- PRECIFICAÇÃO -->
+<div class="preco-block">
+<div class="preco-header">
+<div class="preco-header-title">Precificação sugerida</div>
+<div class="preco-badge" id="badge_saude">—</div>
+</div>
+<div class="preco-grid">
+<div class="preco-item">
+<div class="preco-item-label">Preço mínimo<span class="tip" tabindex="0">?<div class="tip-box"><div class="tip-title">Preço mínimo</div>É o menor preço que você pode cobrar sem ter prejuízo. Cobre todos os custos variáveis mais a margem desejada. Vender abaixo disso significa perder dinheiro em cada venda.</div></span></div>
+<div class="preco-item-val" id="p_minimo">—</div>
+<div style="font-size:.63rem;color:var(--muted);margin-top:.2rem;">abaixo = prejuízo</div>
+</div>
+<div class="preco-item">
+<div class="preco-item-label">Preço sugerido<span class="tip" tabindex="0">?<div class="tip-box"><div class="tip-title">Preço sugerido</div>É o preço mínimo acrescido de 10% de buffer. Esse espaço permite negociar descontos pontuais sem comprometer sua margem. É o preço ideal para anunciar.</div></span></div>
+<div class="preco-item-val big" id="p_sugerido">—</div>
+<div style="font-size:.63rem;color:var(--muted);margin-top:.2rem;">mín. + 10% buffer</div>
+</div>
+<div class="preco-item">
+<div class="preco-item-label">Markup<span class="tip" tabindex="0">?<div class="tip-box"><div class="tip-title">Markup</div>Índice que multiplica o custo total para chegar ao preço de venda.</div></span></div>
+<div class="preco-item-val" id="p_markup">—</div>
+<div style="font-size:.63rem;color:var(--muted);margin-top:.2rem;">× custo total</div>
+</div>
+</div>
+<div class="preco-row2">
+<div class="preco-item">
+<div class="preco-item-label">MCU real<span class="tip" tabindex="0">?<div class="tip-box"><div class="tip-title">Margem de Contribuição Unitária</div>É o quanto sobra de cada venda depois de pagar todos os custos variáveis.</div></span></div>
+<div class="preco-item-val" id="p_mcu">—</div>
+<div style="font-size:.63rem;color:var(--muted);margin-top:.2rem;">por unidade</div>
+<div style="font-size:.68rem;color:var(--muted);margin-top:.55rem;line-height:1.55;font-weight:300;border-top:1px solid var(--rose-panelborder);padding-top:.5rem;"><strong style="color:var(--rose-dark);font-weight:600;display:block;margin-bottom:.2rem;">O que é a MCU?</strong>É o valor que sobra de cada venda após pagar todos os custos variáveis. Essa sobra cobre seus custos fixos mensais e, depois disso, vira lucro.</div>
+</div>
+<div class="preco-item">
+<div class="preco-item-label">Margem real<span class="tip" tabindex="0">?<div class="tip-box"><div class="tip-title">Margem real</div>Percentual da MCU sobre o preço de venda.</div></span></div>
+<div class="preco-item-val" id="p_margem_real">—</div>
+<div style="font-size:.63rem;color:var(--muted);margin-top:.2rem;">% do preço</div>
+</div>
+<div class="preco-item">
+<div class="preco-item-label">% custos variáveis<span class="tip" tabindex="0">?<div class="tip-box"><div class="tip-title">% Custos variáveis</div>Proporção do preço consumida pelos custos variáveis.</div></span></div>
+<div class="preco-item-val" id="p_pct_cv">—</div>
+<div style="font-size:.63rem;color:var(--muted);margin-top:.2rem;">do preço sugerido</div>
+</div>
+</div>
+<div class="insight-box" id="insight">—</div>
+<div class="alerta" id="alerta">—</div>
+</div>
+<!-- PE -->
+<div class="pe-panel">
+<div class="pe-title"><span style="width:5px;height:5px;border-radius:50%;background:var(--rose);display:inline-block;"></span>Ponto de equilíbrio</div>
+<div class="pe-fixed-wrap">
+<label>Custos fixos mensais:</label>
+<div class="iw" style="min-width:140px"><span class="ip">R$</span><input type="number" id="cf" value="10000" min="0" step="100" oninput="calc()"></div>
+<span style="font-size:.72rem;color:var(--muted);font-weight:300;">Aluguel, salários, contador, softwares — tudo que você paga independente das vendas.</span>
+</div>
+<div class="pe-grid">
+<div class="pe-card"><div class="pe-card-label">PE — preço mínimo</div><div class="pe-card-val" id="pe_min_un">—</div><div class="pe-card-sub">unidades / mês</div></div>
+<div class="pe-card"><div class="pe-card-label">PE — preço sugerido</div><div class="pe-card-val" id="pe_sug_un">—</div><div class="pe-card-sub">unidades / mês</div></div>
+<div class="pe-card"><div class="pe-card-label">Faturamento mínimo</div><div class="pe-card-val" id="pe_min_rs">—</div><div class="pe-card-sub">ao preço sugerido</div></div>
+<div class="pe-card"><div class="pe-card-label">Lucro além do PE</div><div class="pe-card-val" id="pe_lucro_un">—</div><div class="pe-card-sub">por unidade extra</div></div>
+</div>
+</div>
+
+<!-- ── BLOCO FRETE GRÁTIS ── -->
+<div class="fg-block">
+<div class="fg-header">
+<div class="fg-header-title">Vale a pena oferecer frete grátis?</div>
+<button class="fg-toggle" onclick="toggleFG()">▼ Analisar</button>
+</div>
+<div class="fg-body" id="fg_body">
+<div class="fg-inputs">
+<div class="fg-col">
+<div class="fg-col-title">Custo real do frete</div>
+<div class="fg-field">
+<div class="fg-field-label">Custo do frete por pedido<small>Valor real cobrado pela transportadora</small></div>
+<div class="iw"><span class="ip">R$</span><input type="number" id="fg_frete" value="18" min="0" step="0.01" oninput="calcFG()"></div>
+</div>
+<div class="fg-field">
+<div class="fg-field-label">Volume mensal de pedidos<small>Quantos pedidos você envia por mês</small></div>
+<div class="iw"><input type="number" id="fg_volume" value="100" min="1" step="1" oninput="calcFG()"><span class="ip">un</span></div>
+</div>
+</div>
+<div class="fg-col">
+<div class="fg-col-title">Referência</div>
+<div class="fg-field">
+<div class="fg-field-label">Margem mínima saudável<small>Abaixo disso é sinal de alerta</small></div>
+<div class="iw"><input type="number" id="fg_min_margem" value="30" min="0" max="100" step="0.5" oninput="calcFG()"><span class="ip">%</span></div>
+</div>
+<div class="fg-field" style="border-bottom:none;">
+<div class="fg-field-label" style="font-size:.72rem;color:var(--muted);font-weight:300;">Os demais valores (custo, impostos, comissão, cartão, embalagem) são lidos automaticamente da calculadora acima.</div>
+</div>
+</div>
+</div>
+<!-- veredicto -->
+<div class="fg-verdict">
+<div class="fg-verdict-badge green" id="fg_badge">—</div>
+<div class="fg-verdict-text" id="fg_verdict_text">—</div>
+</div>
+<!-- kpis -->
+<div class="fg-kpis">
+<div class="fg-kpi"><div class="fg-kpi-label">Margem sem frete grátis</div><div class="fg-kpi-val" id="fg_k_msf">—</div></div>
+<div class="fg-kpi"><div class="fg-kpi-label">Margem com frete grátis</div><div class="fg-kpi-val" id="fg_k_mcf">—</div></div>
+<div class="fg-kpi"><div class="fg-kpi-label">Impacto por venda</div><div class="fg-kpi-val red" id="fg_k_impacto">—</div></div>
+<div class="fg-kpi"><div class="fg-kpi-label">Lucro por venda c/ frete</div><div class="fg-kpi-val" id="fg_k_lucro">—</div></div>
+<div class="fg-kpi"><div class="fg-kpi-label">Custo mensal do frete grátis</div><div class="fg-kpi-val red" id="fg_k_mensal">—</div></div>
+</div>
+<!-- barras -->
+<div class="fg-bars">
+<div class="fg-bars-title">Para onde vai cada real do preço de venda (com frete grátis)</div>
+<div class="fg-bar-row"><div class="fg-bar-meta"><span>Custo do produto</span><span id="fg_b_custo_l">—</span></div><div class="fg-bar-track"><div class="fg-bar-fill" id="fg_b_custo" style="width:0%;background:#eda100;"></div></div></div>
+<div class="fg-bar-row"><div class="fg-bar-meta"><span>Impostos + comissão + cartão</span><span id="fg_b_pct_l">—</span></div><div class="fg-bar-track"><div class="fg-bar-fill" id="fg_b_pct" style="width:0%;background:#7f77dd;"></div></div></div>
+<div class="fg-bar-row"><div class="fg-bar-meta"><span>Embalagem + outros fixos</span><span id="fg_b_fix_l">—</span></div><div class="fg-bar-track"><div class="fg-bar-fill" id="fg_b_fix" style="width:0%;background:#1d9e75;"></div></div></div>
+<div class="fg-bar-row"><div class="fg-bar-meta"><span>Frete grátis absorvido</span><span id="fg_b_frete_l">—</span></div><div class="fg-bar-track"><div class="fg-bar-fill" id="fg_b_frete" style="width:0%;background:#c96b5e;"></div></div></div>
+<div class="fg-bar-row"><div class="fg-bar-meta"><span>Lucro restante</span><span id="fg_b_lucro_l">—</span></div><div class="fg-bar-track"><div class="fg-bar-fill" id="fg_b_lucro" style="width:0%;background:#7aab7a;"></div></div></div>
+</div>
+<!-- pontos de virada -->
+<div class="fg-pivot">
+<div class="fg-pivot-item"><div class="fg-pivot-label">Preço mínimo c/ frete embutido</div><div class="fg-pivot-val" id="fg_p_precominimo">—</div><div class="fg-pivot-sub">para manter a margem mínima</div></div>
+<div class="fg-pivot-item"><div class="fg-pivot-label">Diferença para o preço atual</div><div class="fg-pivot-val" id="fg_p_diff">—</div><div class="fg-pivot-sub">quanto falta ou sobra</div></div>
+<div class="fg-pivot-item"><div class="fg-pivot-label">Frete máximo absorvível</div><div class="fg-pivot-val" id="fg_p_fretemax">—</div><div class="fg-pivot-sub">sem sair da margem mínima</div></div>
+<div class="fg-pivot-item"><div class="fg-pivot-label">Custo mensal total do frete</div><div class="fg-pivot-val" id="fg_p_mensal">—</div><div class="fg-pivot-sub">com o volume atual</div></div>
+</div>
+</div>
+</div>
+
+</div><!-- fim .main -->
+
+<div class="glossario">
+<div class="glossario-header" onclick="toggleGlossario()">
+<div class="glossario-header-title">Guia de Conceitos — entenda cada termo da calculadora</div>
+<div class="glossario-header-sub" id="gloss_toggle_txt">▼ clique para expandir</div>
+</div>
+<div class="glossario-body" id="glossario_body" style="display:none;">
+<div class="gitem"><div class="gitem-term">CMV — Custo da Mercadoria Vendida</div><div class="gitem-def">É o valor que você pagou pelo produto, incluindo o frete de compra.</div></div>
+<div class="gitem"><div class="gitem-term">Margem de Contribuição (MCU)</div><div class="gitem-def">É o valor que sobra de cada venda depois de pagar todos os custos variáveis.</div></div>
+<div class="gitem"><div class="gitem-term">Markup</div><div class="gitem-def">Índice multiplicador aplicado sobre o custo total para chegar ao preço de venda.</div></div>
+<div class="gitem"><div class="gitem-term">Preço mínimo</div><div class="gitem-def">O menor valor que você pode cobrar sem ter prejuízo por unidade.</div></div>
+<div class="gitem"><div class="gitem-term">Preço sugerido</div><div class="gitem-def">Preço mínimo acrescido de 10% de buffer para negociar descontos sem comprometer sua margem.</div></div>
+<div class="gitem"><div class="gitem-term">Ponto de Equilíbrio (PE)</div><div class="gitem-def">Quantidade mínima de vendas no mês necessária para pagar todos os custos fixos.</div></div>
+<div class="gitem"><div class="gitem-term">Custos variáveis</div><div class="gitem-def">Gastos que existem apenas quando há uma venda: impostos, comissão, taxa do cartão, frete, embalagem.</div></div>
+<div class="gitem"><div class="gitem-term">Custos fixos</div><div class="gitem-def">Gastos mensais que independem do volume de vendas: aluguel, salários, contador, softwares.</div></div>
+<div class="gitem"><div class="gitem-term">Frete grátis — impacto</div><div class="gitem-def">Ao oferecer frete grátis, você absorve o custo do frete na sua margem. A análise mostra se a margem restante ainda é saudável e qual o preço mínimo para o frete grátis ser viável.</div></div>
+<div class="gitem"><div class="gitem-term">Frete máximo absorvível</div><div class="gitem-def">Valor máximo de frete que você consegue embutir no preço sem cair abaixo da sua margem mínima saudável.</div></div>
+</div>
+</div>
+
+<footer>Rk. by Mudiflow &nbsp;·&nbsp; Estratégia Financeira para PMEs &nbsp;·&nbsp; por Elaine Lima &nbsp;·&nbsp; Preço sugerido = preço mínimo + 10% de buffer para negociação</footer>
+
+<script>
+const fmt  = v => 'R$ ' + (Math.round(v*100)/100).toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+const fmtS = v => (v<0?'-':'')+'R$ '+Math.abs(Math.round(v*100)/100).toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+const fmtN = v => Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+const fmtP = v => (Math.round(v*10)/10).toFixed(1)+'%';
+let tipoAtual='produto';
+
+document.addEventListener('DOMContentLoaded',function(){
+  document.querySelectorAll('.tip').forEach(function(tip){
+    const box=tip.querySelector('.tip-box');
+    if(!box)return;
+    function show(){box.classList.add('visible');const rect=tip.getBoundingClientRect();const bw=240,bh=box.offsetHeight||120;let left=rect.left+rect.width/2-bw/2;let top=rect.top-bh-8;if(left<8)left=8;if(left+bw>window.innerWidth-8)left=window.innerWidth-bw-8;if(top<8)top=rect.bottom+8;box.style.left=left+'px';box.style.top=top+'px';}
+    function hide(){box.classList.remove('visible');}
+    tip.addEventListener('mouseenter',show);tip.addEventListener('mouseleave',hide);tip.addEventListener('focus',show);tip.addEventListener('blur',hide);
+  });
+});
+
+function toggleGlossario(){const body=document.getElementById('glossario_body');const txt=document.getElementById('gloss_toggle_txt');const open=body.style.display==='none';body.style.display=open?'grid':'none';txt.textContent=open?'▲ clique para fechar':'▼ clique para expandir';}
+
+function toggleFG(){const body=document.getElementById('fg_body');const btn=document.querySelector('.fg-toggle');const open=body.classList.contains('open');body.classList.toggle('open');btn.textContent=open?'▼ Analisar':'▲ Fechar';if(!open)calcFG();}
+
+function setModo(valor){const btn=document.getElementById('btn_servico');if(valor==='ambos'){btn.style.display='';}else{btn.style.display='none';if(tipoAtual==='servico')setTipo('produto');}}
+
+function setTipo(tipo){tipoAtual=tipo;document.getElementById('btn_produto').className='tipo-btn'+(tipo==='produto'?' active':'');document.getElementById('btn_servico').className='tipo-btn'+(tipo==='servico'?' active':'');document.querySelectorAll('.campo-produto').forEach(el=>el.style.display=tipo==='produto'?'flex':'none');document.querySelectorAll('.campo-servico').forEach(el=>el.style.display=tipo==='servico'?'flex':'none');document.getElementById('panel_fixos').style.display=tipo==='produto'?'block':'none';document.getElementById('painel_titulo').textContent=tipo==='produto'?'Produto':'Serviço';if(tipo==='produto'){document.getElementById('ref_margem').textContent='30% a 50%';document.getElementById('ref_atencao').textContent='25%';document.getElementById('margem_ref').textContent='Recomendado: 30–50% para produto';document.getElementById('margem').value=35;}else{document.getElementById('ref_margem').textContent='40% a 70%';document.getElementById('ref_atencao').textContent='35%';document.getElementById('margem_ref').textContent='Recomendado: 40–70% para serviço';document.getElementById('margem').value=50;}calc();}
+
+function limparCampos(){['custo','custo_hora','horas','materiais','margem','imposto','comissao','cartao','outros_pct','frete','embal','desconto','atacado','cf'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});calc();}
+
+function calc(){
+  const tipo=tipoAtual;
+  let custo=0;
+  if(tipo==='produto'){custo=parseFloat(document.getElementById('custo').value)||0;}
+  else{const ch=parseFloat(document.getElementById('custo_hora').value)||0;const h=parseFloat(document.getElementById('horas').value)||0;const m=parseFloat(document.getElementById('materiais').value)||0;custo=(ch*h)+m;}
+  const frete_val=tipo==='produto'?(parseFloat(document.getElementById('frete').value)||0):0;
+  const embal_val=tipo==='produto'?(parseFloat(document.getElementById('embal').value)||0):0;
+  const margem=parseFloat(document.getElementById('margem').value)||35;
+  const imposto=parseFloat(document.getElementById('imposto').value)||0;
+  const comissao=parseFloat(document.getElementById('comissao').value)||0;
+  const cartao=parseFloat(document.getElementById('cartao').value)||0;
+  const outros_pct=parseFloat(document.getElementById('outros_pct').value)||0;
+  const cf=parseFloat(document.getElementById('cf').value)||0;
+  const total_pct=(imposto+comissao+cartao+outros_pct)/100;
+  const custo_fixo=custo+frete_val+embal_val;
+  const divisor=1-total_pct-(margem/100);
+  const p_min=divisor>0.01?custo_fixo/divisor:0;
+  const p_sug=p_min*1.10;
+  const v_imp=p_sug*imposto/100;const v_com=p_sug*comissao/100;const v_car=p_sug*cartao/100;const v_out=p_sug*outros_pct/100;
+  const total_cv=custo+frete_val+embal_val+v_imp+v_com+v_car+v_out;
+  const mcu=p_sug-total_cv;
+  const mcu_min=p_min-(custo+frete_val+embal_val+p_min*total_pct);
+  const margem_real=p_sug>0?(mcu/p_sug*100):0;
+  const pct_cv=p_sug>0?(total_cv/p_sug*100):0;
+  const markup=custo_fixo>0?p_sug/custo_fixo:0;
+  const pe_min_un=mcu_min>0?cf/mcu_min:Infinity;
+  const pe_sug_un=mcu>0?cf/mcu:Infinity;
+  const pe_min_rs=isFinite(pe_sug_un)?pe_sug_un*p_sug:Infinity;
+  document.getElementById('bk_custo').textContent=fmt(custo);
+  document.getElementById('bk_fixos').textContent=fmt(frete_val+embal_val);
+  document.getElementById('bk_imp_pct').textContent=imposto?'('+imposto+'%)':'';
+  document.getElementById('bk_com_pct').textContent=comissao?'('+comissao+'%)':'';
+  document.getElementById('bk_car_pct').textContent=cartao?'('+cartao+'%)':'';
+  document.getElementById('bk_out_pct').textContent=outros_pct?'('+outros_pct+'%)':'';
+  document.getElementById('bk_imp').textContent=fmt(v_imp);
+  document.getElementById('bk_com').textContent=fmt(v_com);
+  document.getElementById('bk_car').textContent=fmt(v_car);
+  document.getElementById('bk_out').textContent=fmt(v_out);
+  document.getElementById('bk_total').textContent=fmt(total_cv);
+  document.getElementById('p_minimo').textContent=fmt(p_min);
+  document.getElementById('p_sugerido').textContent=fmt(p_sug);
+  document.getElementById('p_markup').textContent=markup.toFixed(2)+'x';
+  document.getElementById('p_margem_real').textContent=fmtP(margem_real);
+  document.getElementById('p_pct_cv').textContent=fmtP(pct_cv);
+  const mcu_el=document.getElementById('p_mcu');mcu_el.textContent=fmt(mcu);mcu_el.className='preco-item-val '+(mcu>=0?'green':'red');
+  const badge=document.getElementById('badge_saude');const lim_ok=tipo==='servico'?40:30;const lim_atk=tipo==='servico'?35:25;
+  if(margem_real>=lim_ok){badge.textContent='✔ Saudável';badge.style.background='rgba(255,255,255,.25)';}
+  else if(margem_real>=lim_atk){badge.textContent='⚠ Atenção';badge.style.background='rgba(255,255,255,.15)';}
+  else{badge.textContent='✕ Risco';badge.style.background='rgba(180,60,50,.35)';}
+  document.getElementById('insight').textContent='Com o preço sugerido de '+fmt(p_sug)+', cada venda gera '+fmt(mcu)+' de margem de contribuição. Os custos variáveis representam '+fmtP(pct_cv)+' do preço. O preço mínimo sem prejuízo é '+fmt(p_min)+' — abaixo disso você perde dinheiro em cada venda.';
+  const alerta=document.getElementById('alerta');
+  if(divisor<=0.01){alerta.style.display='block';alerta.textContent='A soma de impostos, comissões e margem ultrapassa 100%. Reduza algum percentual.';}else{alerta.style.display='none';}
+  document.getElementById('pe_min_un').textContent=isFinite(pe_min_un)?fmtN(pe_min_un)+' un':'∞';
+  document.getElementById('pe_sug_un').textContent=isFinite(pe_sug_un)?fmtN(pe_sug_un)+' un':'∞';
+  document.getElementById('pe_min_rs').textContent=isFinite(pe_min_rs)?fmt(pe_min_rs):'∞';
+  document.getElementById('pe_lucro_un').textContent=fmt(mcu);
+  const desc_raw=document.getElementById('desconto').value;const desconto=desc_raw===''?0:(parseFloat(desc_raw)||0);
+  const p_desc=p_sug*(1-desconto/100);const v_imp_d=p_desc*imposto/100;const v_com_d=p_desc*comissao/100;const v_car_d=p_desc*cartao/100;const v_out_d=p_desc*outros_pct/100;
+  const total_cv_d=custo+frete_val+embal_val+v_imp_d+v_com_d+v_car_d+v_out_d;const mcu_desc=p_desc-total_cv_d;const queda_mcu=mcu>0?((mcu-mcu_desc)/mcu*100):0;
+  document.getElementById('sim_preco_cheio').textContent=fmt(p_sug);
+  document.getElementById('sim_desc_pct').textContent=desconto>0?'('+desconto+'% de desconto)':'(sem desconto)';
+  document.getElementById('sim_preco_desc').textContent=fmt(p_desc);
+  const mcu_desc_el=document.getElementById('sim_mcu_desc');mcu_desc_el.textContent=fmt(mcu_desc);mcu_desc_el.style.color=mcu_desc>=0?'var(--green)':'var(--red)';
+  document.getElementById('sim_queda_mcu').textContent=desconto>0?'▼ '+queda_mcu.toFixed(1)+'% de queda na margem':'— sem desconto aplicado';
+  document.getElementById('sim_queda_mcu').style.color=queda_mcu>0?'var(--red)':'var(--muted)';
+  const sim_atk_rows=['sim_row_atk1','sim_row_atk2','sim_row_atk3'];const row_atacado=document.getElementById('row_atacado');
+  if(tipo==='servico'){sim_atk_rows.forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});if(row_atacado)row_atacado.style.display='none';}
+  else{sim_atk_rows.forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='flex';});if(row_atacado)row_atacado.style.display='flex';
+    const atk_raw=document.getElementById('atacado').value;const atacado=atk_raw===''?0:(parseFloat(atk_raw)||0);
+    const p_atk=p_sug*(1-atacado/100);const v_imp_a=p_atk*imposto/100;const v_com_a=p_atk*comissao/100;const v_car_a=p_atk*cartao/100;const v_out_a=p_atk*outros_pct/100;
+    const total_cv_a=custo+frete_val+embal_val+v_imp_a+v_com_a+v_car_a+v_out_a;const mcu_atk=p_atk-total_cv_a;
+    document.getElementById('sim_atk_pct').textContent='('+atacado+'% sobre preço cheio)';
+    document.getElementById('sim_preco_atk').textContent=fmt(p_atk);
+    const mcu_atk_el=document.getElementById('sim_mcu_atk');mcu_atk_el.textContent=fmt(mcu_atk);mcu_atk_el.style.color=mcu_atk>=0?'var(--green)':'var(--red)';
+    const alerta_atk=document.getElementById('sim_alerta_atk');
+    if(mcu_atk<0){alerta_atk.textContent='Venda no atacado com prejuízo. Aumente o preço tabela ou reduza o desconto de atacado.';alerta_atk.style.color='var(--red)';}
+    else if(mcu_atk<mcu*0.5){alerta_atk.textContent='Margem no atacado muito abaixo do varejo. Avalie se o volume compensa.';alerta_atk.style.color='var(--yellow)';}
+    else{alerta_atk.textContent='Margem no atacado dentro do aceitável.';alerta_atk.style.color='var(--green)';}
+  }
+  // atualiza FG se estiver aberto
+  if(document.getElementById('fg_body').classList.contains('open')) calcFG();
+}
+
+function calcFG(){
+  const tipo=tipoAtual;
+  let custo=0;
+  if(tipo==='produto'){custo=parseFloat(document.getElementById('custo').value)||0;}
+  else{const ch=parseFloat(document.getElementById('custo_hora').value)||0;const h=parseFloat(document.getElementById('horas').value)||0;const m=parseFloat(document.getElementById('materiais').value)||0;custo=(ch*h)+m;}
+  const embal_val=tipo==='produto'?(parseFloat(document.getElementById('embal').value)||0):0;
+  const imposto=parseFloat(document.getElementById('imposto').value)||0;
+  const comissao=parseFloat(document.getElementById('comissao').value)||0;
+  const cartao=parseFloat(document.getElementById('cartao').value)||0;
+  const outros_pct=parseFloat(document.getElementById('outros_pct').value)||0;
+  const p_sug=parseFloat((document.getElementById('p_sugerido').textContent||'').replace('R$ ','').replace(/\./g,'').replace(',','.'))||0;
+
+  const fg_frete=parseFloat(document.getElementById('fg_frete').value)||0;
+  const fg_volume=parseFloat(document.getElementById('fg_volume').value)||100;
+  const fg_min=parseFloat(document.getElementById('fg_min_margem').value)||30;
+
+  const somaPctDec=(imposto+comissao+cartao+outros_pct)/100;
+  const totalFixSemFrete=custo+embal_val;
+
+  const custoSemFrete=totalFixSemFrete+p_sug*somaPctDec;
+  const lucroSemFrete=p_sug-custoSemFrete;
+  const margemSemFrete=p_sug>0?(lucroSemFrete/p_sug*100):0;
+
+  const lucroComFrete=lucroSemFrete-fg_frete;
+  const margemComFrete=p_sug>0?(lucroComFrete/p_sug*100):0;
+  const impactoMensal=fg_frete*fg_volume;
+
+  const precoMinimo=(totalFixSemFrete+fg_frete)/(1-somaPctDec-fg_min/100);
+  const diff=p_sug-precoMinimo;
+  const freteMaxAbs=p_sug*(1-somaPctDec-fg_min/100)-totalFixSemFrete;
+
+  // kpis
+  document.getElementById('fg_k_msf').textContent=fmtP(margemSemFrete);
+  document.getElementById('fg_k_mcf').textContent=fmtP(margemComFrete);
+  document.getElementById('fg_k_impacto').textContent=fmtS(-fg_frete);
+  document.getElementById('fg_k_lucro').textContent=fmtS(lucroComFrete);
+  document.getElementById('fg_k_mensal').textContent=fmtS(-impactoMensal);
+
+  const msf_el=document.getElementById('fg_k_msf');msf_el.className='fg-kpi-val '+(margemSemFrete>=fg_min?'green':'yellow');
+  const mcf_el=document.getElementById('fg_k_mcf');mcf_el.className='fg-kpi-val '+(margemComFrete>=fg_min?'green':margemComFrete>=fg_min*0.75?'yellow':'red');
+  const lucro_el=document.getElementById('fg_k_lucro');lucro_el.className='fg-kpi-val '+(lucroComFrete>0?'green':'red');
+
+  // barras
+  const pCusto=p_sug>0?Math.min(custo/p_sug*100,100):0;
+  const pPct=p_sug>0?Math.min(p_sug*somaPctDec/p_sug*100,100):0;
+  const pFix=p_sug>0?Math.min(embal_val/p_sug*100,100):0;
+  const pFrete=p_sug>0?Math.min(fg_frete/p_sug*100,100):0;
+  const pLucro=p_sug>0?Math.max(lucroComFrete/p_sug*100,0):0;
+  const vPct=p_sug*somaPctDec;
+  function setBar(id,pct,labelId,valor,pctVal){document.getElementById(id).style.width=pct.toFixed(1)+'%';document.getElementById(labelId).textContent=fmtS(valor)+' ('+fmtP(pctVal)+')';}
+  setBar('fg_b_custo',pCusto,'fg_b_custo_l',custo,pCusto);
+  setBar('fg_b_pct',pPct,'fg_b_pct_l',vPct,pPct);
+  setBar('fg_b_fix',pFix,'fg_b_fix_l',embal_val,pFix);
+  setBar('fg_b_frete',pFrete,'fg_b_frete_l',fg_frete,pFrete);
+  setBar('fg_b_lucro',pLucro,'fg_b_lucro_l',Math.max(lucroComFrete,0),pLucro);
+
+  // pontos de virada
+  document.getElementById('fg_p_precominimo').textContent=fmt(precoMinimo);
+  document.getElementById('fg_p_diff').textContent=(diff>=0?'+':'')+fmtS(diff);
+  document.getElementById('fg_p_fretemax').textContent=fmtS(Math.max(freteMaxAbs,0));
+  document.getElementById('fg_p_mensal').textContent=fmtS(-impactoMensal);
+
+  // veredicto
+  const badge=document.getElementById('fg_badge');const txt=document.getElementById('fg_verdict_text');
+  badge.className='fg-verdict-badge';
+  if(margemComFrete>=fg_min){
+    badge.classList.add('green');badge.textContent='Viável';
+    txt.innerHTML='Mesmo absorvendo o frete de <strong>'+fmt(fg_frete)+'</strong>, sua margem fica em <strong>'+fmtP(margemComFrete)+'</strong> — acima do mínimo de '+fmtP(fg_min)+'. Você tem <strong>'+fmt(Math.max(diff,0))+'</strong> de folga no preço atual. Frete grátis é saudável para este produto.';
+  } else if(lucroComFrete>0&&margemComFrete>=fg_min*0.75){
+    badge.classList.add('yellow');badge.textContent='Atenção';
+    txt.innerHTML='Sua margem cai de <strong>'+fmtP(margemSemFrete)+'</strong> para <strong>'+fmtP(margemComFrete)+'</strong> — abaixo do mínimo de '+fmtP(fg_min)+'. Para absorver o frete e manter a margem saudável, o preço precisaria ser <strong>'+fmt(precoMinimo)+'</strong>. O impacto mensal é de <strong>'+fmt(impactoMensal)+'</strong>.';
+  } else if(lucroComFrete>0){
+    badge.classList.add('red');badge.textContent='Risco alto';
+    txt.innerHTML='Com frete grátis, sua margem despenca para <strong>'+fmtP(margemComFrete)+'</strong>. O preço mínimo saudável para absorver o frete seria <strong>'+fmt(precoMinimo)+'</strong>. O frete máximo que você consegue absorver sem risco é <strong>'+fmt(Math.max(freteMaxAbs,0))+'</strong> por pedido.';
+  } else {
+    badge.classList.add('red');badge.textContent='Inviável';
+    txt.innerHTML='Com este frete e preço, <strong>cada venda gera prejuízo de '+fmt(Math.abs(lucroComFrete))+'</strong>. Aumente o preço para pelo menos <strong>'+fmt(precoMinimo)+'</strong> antes de oferecer frete grátis.';
+  }
+}
+
+calc();
+</script>
+</body>
+</html>
