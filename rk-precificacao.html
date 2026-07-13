@@ -203,13 +203,6 @@ header{padding:1rem 1.25rem;}
 <div class="iw"><span class="ip">R$</span><input type="number" id="embal" value="0" min="0" step="0.01" oninput="calc()"></div>
 </div>
 </div>
-<div class="panel">
-<div class="panel-title"><span class="dot-acc"></span>Simulações</div>
-<div class="field">
-<div class="field-label">Desconto concedido<small>Simule quanto sua margem cai ao dar desconto</small></div>
-<div class="iw"><input type="number" id="desconto" value="0" min="0" max="80" step="0.5" oninput="calc()" style="color:var(--rose-dark)"><span class="ip" style="color:var(--rose-dark)">%</span></div>
-</div>
-</div>
 </div>
 <!-- COLUNA RESULTADOS -->
 <div class="results-col">
@@ -225,6 +218,10 @@ header{padding:1rem 1.25rem;}
 </div>
 <div class="panel">
 <div class="panel-title"><span class="dot-acc"></span>Simulação de desconto</div>
+<div class="field">
+<div class="field-label">Desconto concedido<small>Simule quanto sua margem cai ao dar desconto</small></div>
+<div class="iw"><input type="number" id="desconto" value="0" min="0" max="80" step="0.5" oninput="calc()" style="color:var(--rose-dark)"><span class="ip" style="color:var(--rose-dark)">%</span></div>
+</div>
 <div class="bk-row"><div class="bk-label">Preço sugerido (cheio)</div><div class="bk-val" style="color:var(--green)" id="sim_preco_cheio">—</div></div>
 <div class="bk-row"><div class="bk-label">Preço com desconto <small id="sim_desc_pct"></small></div><div class="bk-val" style="color:var(--rose)" id="sim_preco_desc">—</div></div>
 <div class="bk-row"><div class="bk-label">MCU com desconto</div><div class="bk-val" id="sim_mcu_desc">—</div></div>
