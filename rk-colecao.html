@@ -560,6 +560,14 @@ document.addEventListener('keydown', e => {
   }
 });
 
+// ---- persistência: guarda a coleção no seu navegador ----
+var RKCOL_KEY='rk-colecao-v1';
+function salvarColecao(){ try{ var g={}; ['g_imposto','g_comissao','g_cartao','g_outros','g_frete','g_cf'].forEach(function(id){ var el=document.getElementById(id); if(el) g[id]=el.value; }); localStorage.setItem(RKCOL_KEY, JSON.stringify({g:g,produtos:produtos,nextId:nextId})); }catch(e){} }
+function restaurarColecao(){ try{ var s=JSON.parse(localStorage.getItem(RKCOL_KEY)||'null'); if(!s) return; if(s.g) Object.keys(s.g).forEach(function(id){ var el=document.getElementById(id); if(el) el.value=s.g[id]; }); if(Array.isArray(s.produtos)) produtos=s.produtos; if(typeof s.nextId==='number') nextId=s.nextId; }catch(e){} }
+document.addEventListener('input', salvarColecao);
+document.addEventListener('change', salvarColecao);
+renderTudo=(function(orig){ return function(){ orig(); salvarColecao(); }; })(renderTudo);
+restaurarColecao();
 renderTudo();
 </script>
 </body>

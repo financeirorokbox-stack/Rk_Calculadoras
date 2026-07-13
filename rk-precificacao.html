@@ -429,6 +429,18 @@ function calc(){
 
 
 calc();
+
+// ---- persistência: guarda o que você digita, no seu navegador ----
+(function(){
+  var KEY='rk-precificacao-v1';
+  function campos(){ return document.querySelectorAll('input[id], select[id]'); }
+  try{ var s=JSON.parse(localStorage.getItem(KEY)||'null'); if(s){ campos().forEach(function(el){ if(Object.prototype.hasOwnProperty.call(s,el.id)) el.value=s[el.id]; }); } }catch(e){}
+  function salvar(){ try{ var d={}; campos().forEach(function(el){ d[el.id]=el.value; }); localStorage.setItem(KEY, JSON.stringify(d)); }catch(e){} }
+  document.addEventListener('input', salvar);
+  document.addEventListener('change', salvar);
+  var _lc=window.limparCampos; window.limparCampos=function(){ if(_lc)_lc(); try{ localStorage.removeItem(KEY); }catch(e){} };
+  if(typeof calc==='function') calc();
+})();
 </script>
 </body>
 </html>
