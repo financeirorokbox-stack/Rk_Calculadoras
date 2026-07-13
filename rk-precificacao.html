@@ -35,6 +35,9 @@ header{background:var(--white);border-bottom:1px solid var(--border);padding:1.1
 .filtro-select{font-family:'Montserrat',sans-serif;font-size:.75rem;color:var(--muted);border:1px solid var(--border);background:var(--white);padding:.3rem .6rem;cursor:pointer;outline:none;appearance:none;-webkit-appearance:none;padding-right:1.4rem;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%239e8e86'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .5rem center;}
 .filtro-select:focus{border-color:var(--rose);}
 .main{max-width:940px;margin:0 auto;padding:2rem 1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start;}
+.como-usar{grid-column:1/-1;padding:.85rem 1.15rem;background:var(--rose-panel);border:1px solid var(--rose-panelborder);font-size:.79rem;color:var(--muted);line-height:1.65;}
+.como-usar strong{color:var(--rose-dark);font-weight:600;}
+.como-usar b{color:var(--text);font-weight:500;}
 .panel{background:var(--rose-panel);border:1px solid var(--rose-panelborder);overflow:hidden;}
 .panel-title{padding:.8rem 1.25rem;font-size:.65rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--rose-panelborder);display:flex;align-items:center;gap:.5rem;}
 .dot-acc{width:5px;height:5px;border-radius:50%;background:var(--rose);flex-shrink:0;}
@@ -148,6 +151,7 @@ header{padding:1rem 1.25rem;}
 <a class="btn-voltar" href="index.html">← Voltar</a>
 </div>
 <div class="main">
+<div class="como-usar"><strong>Como usar:</strong> preencha o <b>custo</b>, a <b>margem</b> que você quer e os <b>custos variáveis</b> (impostos, comissão, cartão…). À direita, o <b>preço mínimo</b> e o <b>preço sugerido</b> aparecem na hora — não precisa clicar em nada. Passe o mouse nos <b>?</b> ao lado de cada resultado para entender o que cada número significa.</div>
 <!-- COLUNA INPUTS -->
 <div style="display:flex;flex-direction:column;gap:1.25rem;">
 <div class="panel">
