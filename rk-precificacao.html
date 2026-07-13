@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Simulador de Precificação — Rk.</title>
+<title>Simulador de Precificação, Rk.</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -151,13 +151,13 @@ header{padding:1rem 1.25rem;}
 <a class="btn-voltar" href="index.html">← Voltar</a>
 </div>
 <div class="main">
-<div class="como-usar"><strong>Como usar:</strong> preencha o <b>custo</b>, a <b>margem</b> que você quer e os <b>custos variáveis</b> (impostos, comissão, cartão…). À direita, o <b>preço mínimo</b> e o <b>preço sugerido</b> aparecem na hora — não precisa clicar em nada. Passe o mouse nos <b>?</b> ao lado de cada resultado para entender o que cada número significa.</div>
+<div class="como-usar"><strong>Como usar:</strong> preencha o <b>custo</b>, a <b>margem</b> que você quer e os <b>custos variáveis</b> (impostos, comissão, cartão…). À direita, o <b>preço mínimo</b> e o <b>preço sugerido</b> aparecem na hora, não precisa clicar em nada. Passe o mouse nos <b>?</b> ao lado de cada resultado para entender o que cada número significa.</div>
 <!-- COLUNA INPUTS -->
 <div style="display:flex;flex-direction:column;gap:1.25rem;">
 <div class="panel">
 <div class="panel-title"><span class="dot-acc"></span><span id="painel_titulo">Produto</span></div>
 <div class="field campo-produto" id="campo_cmv">
-<div class="field-label">Custo do produto<small>CMV — valor pago pelo produto + frete de compra</small></div>
+<div class="field-label">Custo do produto<small>CMV, valor pago pelo produto + frete de compra</small></div>
 <div class="iw"><span class="ip">R$</span><input type="number" id="custo" value="0" min="0" step="0.01" oninput="calc()"></div>
 </div>
 <div class="field campo-servico" id="campo_hora">
@@ -180,7 +180,7 @@ header{padding:1rem 1.25rem;}
 <div class="panel">
 <div class="panel-title"><span class="dot-acc"></span>Custos variáveis em %</div>
 <div class="field">
-<div class="field-label">Imposto sobre venda<small>Simples Nacional, ISS, ICMS — incide sobre o faturamento</small></div>
+<div class="field-label">Imposto sobre venda<small>Simples Nacional, ISS, ICMS, incide sobre o faturamento</small></div>
 <div class="iw"><input type="number" id="imposto" value="0" min="0" max="30" step="0.1" oninput="calc()"><span class="ip">%</span></div>
 </div>
 <div class="field">
@@ -203,7 +203,7 @@ header{padding:1rem 1.25rem;}
 <div class="iw"><span class="ip">R$</span><input type="number" id="frete" value="0" min="0" step="0.01" oninput="calc()"></div>
 </div>
 <div class="field">
-<div class="field-label">Embalagem / outros<small>Custo de caixa, sacola, fita, papel seda — por unidade</small></div>
+<div class="field-label">Embalagem / outros<small>Custo de caixa, sacola, fita, papel seda, por unidade</small></div>
 <div class="iw"><span class="ip">R$</span><input type="number" id="embal" value="0" min="0" step="0.01" oninput="calc()"></div>
 </div>
 </div>
@@ -282,11 +282,11 @@ header{padding:1rem 1.25rem;}
 <div class="pe-fixed-wrap">
 <label>Custos fixos mensais:</label>
 <div class="iw" style="min-width:140px"><span class="ip">R$</span><input type="number" id="cf" value="0" min="0" step="100" oninput="calc()"></div>
-<span style="font-size:.72rem;color:var(--muted);font-weight:300;">Aluguel, salários, contador, softwares — tudo que você paga independente das vendas.</span>
+<span style="font-size:.72rem;color:var(--muted);font-weight:300;">Aluguel, salários, contador, softwares, tudo que você paga independente das vendas.</span>
 </div>
 <div class="pe-grid">
-<div class="pe-card"><div class="pe-card-label">PE — preço mínimo</div><div class="pe-card-val" id="pe_min_un">—</div><div class="pe-card-sub">unidades / mês</div></div>
-<div class="pe-card"><div class="pe-card-label">PE — preço sugerido</div><div class="pe-card-val" id="pe_sug_un">—</div><div class="pe-card-sub">unidades / mês</div></div>
+<div class="pe-card"><div class="pe-card-label">PE, preço mínimo</div><div class="pe-card-val" id="pe_min_un">—</div><div class="pe-card-sub">unidades / mês</div></div>
+<div class="pe-card"><div class="pe-card-label">PE, preço sugerido</div><div class="pe-card-val" id="pe_sug_un">—</div><div class="pe-card-sub">unidades / mês</div></div>
 <div class="pe-card"><div class="pe-card-label">Faturamento mínimo</div><div class="pe-card-val" id="pe_min_rs">—</div><div class="pe-card-sub">ao preço sugerido</div></div>
 <div class="pe-card"><div class="pe-card-label">Lucro além do PE</div><div class="pe-card-val" id="pe_lucro_un">—</div><div class="pe-card-sub">por unidade extra</div></div>
 </div>
@@ -297,11 +297,11 @@ header{padding:1rem 1.25rem;}
 
 <div class="glossario">
 <div class="glossario-header" onclick="toggleGlossario()">
-<div class="glossario-header-title">Guia de Conceitos — entenda cada termo da calculadora</div>
+<div class="glossario-header-title">Guia de Conceitos, entenda cada termo da calculadora</div>
 <div class="glossario-header-sub" id="gloss_toggle_txt">▼ clique para expandir</div>
 </div>
 <div class="glossario-body" id="glossario_body" style="display:none;">
-<div class="gitem"><div class="gitem-term">CMV — Custo da Mercadoria Vendida</div><div class="gitem-def">É o valor que você pagou pelo produto, incluindo o frete de compra.</div></div>
+<div class="gitem"><div class="gitem-term">CMV, Custo da Mercadoria Vendida</div><div class="gitem-def">É o valor que você pagou pelo produto, incluindo o frete de compra.</div></div>
 <div class="gitem"><div class="gitem-term">Margem de Contribuição (MCU)</div><div class="gitem-def">É o valor que sobra de cada venda depois de pagar todos os custos variáveis.</div></div>
 <div class="gitem"><div class="gitem-term">Markup</div><div class="gitem-def">Índice multiplicador aplicado sobre o custo total para chegar ao preço de venda.</div></div>
 <div class="gitem"><div class="gitem-term">Preço mínimo</div><div class="gitem-def">O menor valor que você pode cobrar sem ter prejuízo por unidade.</div></div>
@@ -389,7 +389,7 @@ function calc(){
   if(margem_real>=lim_ok){badge.textContent='✔ Saudável';badge.style.background='rgba(255,255,255,.25)';}
   else if(margem_real>=lim_atk){badge.textContent='⚠ Atenção';badge.style.background='rgba(255,255,255,.15)';}
   else{badge.textContent='✕ Risco';badge.style.background='rgba(180,60,50,.35)';}
-  document.getElementById('insight').textContent='Com o preço sugerido de '+fmt(p_sug)+', cada venda gera '+fmt(mcu)+' de margem de contribuição. Os custos variáveis representam '+fmtP(pct_cv)+' do preço. O preço mínimo sem prejuízo é '+fmt(p_min)+' — abaixo disso você perde dinheiro em cada venda.';
+  document.getElementById('insight').textContent='Com o preço sugerido de '+fmt(p_sug)+', cada venda gera '+fmt(mcu)+' de margem de contribuição. Os custos variáveis representam '+fmtP(pct_cv)+' do preço. O preço mínimo sem prejuízo é '+fmt(p_min)+', abaixo disso você perde dinheiro em cada venda.';
   const alerta=document.getElementById('alerta');
   if(divisor<=0.01){alerta.style.display='block';alerta.textContent='A soma de impostos, comissões e margem ultrapassa 100%. Reduza algum percentual.';}else{alerta.style.display='none';}
   document.getElementById('pe_min_un').textContent=isFinite(pe_min_un)?fmtN(pe_min_un)+' un':'∞';

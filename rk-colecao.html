@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Mix de Coleção — Rk.</title>
+<title>Mix de Coleção, Rk.</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -166,13 +166,13 @@
 
 <div class="wrap">
 
-  <div class="como-usar"><strong>Como usar:</strong> preencha os <b>custos globais</b> no topo (impostos, comissão, cartão…), que valem para todos os produtos. Depois <b>adicione cada produto</b> da coleção (nome, preço, custo e quantidade). O <b>resumo</b> mostra faturamento, margem média e o ponto de equilíbrio da coleção inteira — e aponta quais produtos comprometem o resultado.</div>
+  <div class="como-usar"><strong>Como usar:</strong> preencha os <b>custos globais</b> no topo (impostos, comissão, cartão…), que valem para todos os produtos. Depois <b>adicione cada produto</b> da coleção (nome, preço, custo e quantidade). O <b>resumo</b> mostra faturamento, margem média e o ponto de equilíbrio da coleção inteira, e aponta quais produtos comprometem o resultado.</div>
   <!-- CUSTOS GLOBAIS -->
   <div class="global-card">
-    <div class="global-header"><span class="dot-acc"></span>Custos globais da operação — aplicados a todos os produtos</div>
+    <div class="global-header"><span class="dot-acc"></span>Custos globais da operação, aplicados a todos os produtos</div>
     <div class="global-body">
       <div class="global-item">
-        <div class="global-item-label">Imposto sobre venda<small>Simples, ISS, ICMS — incide sobre o faturamento</small></div>
+        <div class="global-item-label">Imposto sobre venda<small>Simples, ISS, ICMS, incide sobre o faturamento</small></div>
         <div class="iw"><input type="number" id="g_imposto" value="0" min="0" max="50" step="0.1" oninput="recalcAll()"><span class="ip">%</span></div>
       </div>
       <div class="global-item">
@@ -192,7 +192,7 @@
         <div class="iw"><span class="ip">R$</span><input type="number" id="g_frete" value="0" min="0" step="0.01" oninput="recalcAll()"></div>
       </div>
       <div class="global-item">
-        <div class="global-item-label">Custos fixos mensais<small>aluguel, salários, contador — independem das vendas</small></div>
+        <div class="global-item-label">Custos fixos mensais<small>aluguel, salários, contador, independem das vendas</small></div>
         <div class="iw"><span class="ip">R$</span><input type="number" id="g_cf" value="0" min="0" step="100" oninput="recalcAll()"></div>
       </div>
     </div>
@@ -336,7 +336,7 @@
 
   <!-- GRÁFICO MCU POR PRODUTO -->
   <div class="chart-section" id="chart_section" style="display:none;">
-    <div class="chart-title"><span class="dot-acc"></span>MCU por produto — comparativo de margem</div>
+    <div class="chart-title"><span class="dot-acc"></span>MCU por produto, comparativo de margem</div>
     <div class="chart-bars" id="chart_bars"></div>
   </div>
 
@@ -345,8 +345,8 @@
 <div class="gloss-col">
   <div class="gloss-col-head">Entenda os números</div>
   <div class="gloss-col-body">
-    <div class="gloss-col-item"><div class="gloss-col-term">MCU — Margem de Contribuição</div><div class="gloss-col-def">Quanto sobra de cada venda depois dos custos variáveis. É o que cobre os custos fixos e, depois disso, vira lucro.</div></div>
-    <div class="gloss-col-item"><div class="gloss-col-term">MCU média da coleção</div><div class="gloss-col-def">A média das MCUs dos produtos, ponderada pela quantidade prevista — o quanto a coleção gera por unidade vendida.</div></div>
+    <div class="gloss-col-item"><div class="gloss-col-term">MCU, Margem de Contribuição</div><div class="gloss-col-def">Quanto sobra de cada venda depois dos custos variáveis. É o que cobre os custos fixos e, depois disso, vira lucro.</div></div>
+    <div class="gloss-col-item"><div class="gloss-col-term">MCU média da coleção</div><div class="gloss-col-def">A média das MCUs dos produtos, ponderada pela quantidade prevista, o quanto a coleção gera por unidade vendida.</div></div>
     <div class="gloss-col-item"><div class="gloss-col-term">Faturamento mensal</div><div class="gloss-col-def">A soma de preço × quantidade prevista de todos os produtos do mix.</div></div>
     <div class="gloss-col-item"><div class="gloss-col-term">Ponto de equilíbrio</div><div class="gloss-col-def">Quantas unidades a coleção precisa vender no mês para cobrir os custos fixos. Acima disso, é lucro.</div></div>
     <div class="gloss-col-item"><div class="gloss-col-term">Custos variáveis</div><div class="gloss-col-def">Gastos que só existem quando há venda: custo do produto, impostos, comissão, cartão e frete.</div></div>
@@ -532,7 +532,7 @@ function renderResumo() {
   if (fat_total === 0) {
     insight = 'Adicione a quantidade prevista de vendas para cada produto para calcular o lucro estimado.';
   } else if (lucro < 0) {
-    insight = `Com o mix atual, a coleção gera ${fmt(mcu_total)} de MCU total, mas os custos fixos são ${fmt(g.cf)}. Há um déficit de ${fmt(Math.abs(lucro))} — você precisa vender mais ou revisar os preços/custos.`;
+    insight = `Com o mix atual, a coleção gera ${fmt(mcu_total)} de MCU total, mas os custos fixos são ${fmt(g.cf)}. Há um déficit de ${fmt(Math.abs(lucro))}, você precisa vender mais ou revisar os preços/custos.`;
   } else {
     insight = `A coleção gera ${fmt(mcu_total)} de margem de contribuição total, cobrindo os custos fixos de ${fmt(g.cf)} e gerando ${fmt(lucro)} de lucro estimado. Margem média ponderada de ${fmtP(margem_media)}.`;
     if (budget > 0) insight += ` O budget de investimento em estoque é ${fmt(budget)}, com retorno de ${roi.toFixed(2)}x sobre o investimento.`;
