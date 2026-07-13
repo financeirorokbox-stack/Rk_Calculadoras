@@ -209,10 +209,6 @@ header{padding:1rem 1.25rem;}
 <div class="field-label">Desconto concedido<small>Simule quanto sua margem cai ao dar desconto</small></div>
 <div class="iw"><input type="number" id="desconto" value="0" min="0" max="80" step="0.5" oninput="calc()" style="color:var(--rose-dark)"><span class="ip" style="color:var(--rose-dark)">%</span></div>
 </div>
-<div class="field" id="row_atacado">
-<div class="field-label">Desconto atacado<small>% aplicado sobre o preço cheio para venda em quantidade</small></div>
-<div class="iw"><input type="number" id="atacado" value="0" min="0" max="80" step="0.5" oninput="calc()"><span class="ip">%</span></div>
-</div>
 </div>
 </div>
 <!-- COLUNA RESULTADOS -->
@@ -228,14 +224,11 @@ header{padding:1rem 1.25rem;}
 <div class="bk-row tot"><div class="bk-label">Total custos variáveis</div><div class="bk-val" id="bk_total">—</div></div>
 </div>
 <div class="panel">
-<div class="panel-title"><span class="dot-acc"></span>Simulação de desconto e atacado</div>
+<div class="panel-title"><span class="dot-acc"></span>Simulação de desconto</div>
 <div class="bk-row"><div class="bk-label">Preço sugerido (cheio)</div><div class="bk-val" style="color:var(--green)" id="sim_preco_cheio">—</div></div>
 <div class="bk-row"><div class="bk-label">Preço com desconto <small id="sim_desc_pct"></small></div><div class="bk-val" style="color:var(--rose)" id="sim_preco_desc">—</div></div>
 <div class="bk-row"><div class="bk-label">MCU com desconto</div><div class="bk-val" id="sim_mcu_desc">—</div></div>
 <div class="bk-row"><div class="bk-label">Queda na MCU</div><div class="bk-val" id="sim_queda_mcu">—</div></div>
-<div class="bk-row tot" id="sim_row_atk1"><div class="bk-label">Preço atacado <small id="sim_atk_pct"></small></div><div class="bk-val" style="color:var(--yellow)" id="sim_preco_atk">—</div></div>
-<div class="bk-row" id="sim_row_atk2"><div class="bk-label">MCU no atacado</div><div class="bk-val" id="sim_mcu_atk">—</div></div>
-<div class="bk-row" id="sim_row_atk3"><div class="bk-label" style="font-size:.72rem" id="sim_alerta_atk"></div><div></div></div>
 </div>
 </div>
 <!-- PRECIFICAÇÃO -->
@@ -344,7 +337,7 @@ function setModo(valor){const btn=document.getElementById('btn_servico');if(valo
 
 function setTipo(tipo){tipoAtual=tipo;document.getElementById('btn_produto').className='tipo-btn'+(tipo==='produto'?' active':'');document.getElementById('btn_servico').className='tipo-btn'+(tipo==='servico'?' active':'');document.querySelectorAll('.campo-produto').forEach(el=>el.style.display=tipo==='produto'?'flex':'none');document.querySelectorAll('.campo-servico').forEach(el=>el.style.display=tipo==='servico'?'flex':'none');document.getElementById('panel_fixos').style.display=tipo==='produto'?'block':'none';document.getElementById('painel_titulo').textContent=tipo==='produto'?'Produto':'Serviço';if(tipo==='produto'){document.getElementById('ref_margem').textContent='30% a 50%';document.getElementById('ref_atencao').textContent='25%';document.getElementById('margem_ref').textContent='Recomendado: 30–50% para produto';document.getElementById('margem').value=35;}else{document.getElementById('ref_margem').textContent='40% a 70%';document.getElementById('ref_atencao').textContent='35%';document.getElementById('margem_ref').textContent='Recomendado: 40–70% para serviço';document.getElementById('margem').value=50;}calc();}
 
-function limparCampos(){['custo','custo_hora','horas','materiais','margem','imposto','comissao','cartao','outros_pct','frete','embal','desconto','atacado','cf'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});calc();}
+function limparCampos(){['custo','custo_hora','horas','materiais','margem','imposto','comissao','cartao','outros_pct','frete','embal','desconto','cf'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});calc();}
 
 function calc(){
   const tipo=tipoAtual;
@@ -411,20 +404,6 @@ function calc(){
   const mcu_desc_el=document.getElementById('sim_mcu_desc');mcu_desc_el.textContent=fmt(mcu_desc);mcu_desc_el.style.color=mcu_desc>=0?'var(--green)':'var(--red)';
   document.getElementById('sim_queda_mcu').textContent=desconto>0?'▼ '+queda_mcu.toFixed(1)+'% de queda na margem':'— sem desconto aplicado';
   document.getElementById('sim_queda_mcu').style.color=queda_mcu>0?'var(--red)':'var(--muted)';
-  const sim_atk_rows=['sim_row_atk1','sim_row_atk2','sim_row_atk3'];const row_atacado=document.getElementById('row_atacado');
-  if(tipo==='servico'){sim_atk_rows.forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});if(row_atacado)row_atacado.style.display='none';}
-  else{sim_atk_rows.forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='flex';});if(row_atacado)row_atacado.style.display='flex';
-    const atk_raw=document.getElementById('atacado').value;const atacado=atk_raw===''?0:(parseFloat(atk_raw)||0);
-    const p_atk=p_sug*(1-atacado/100);const v_imp_a=p_atk*imposto/100;const v_com_a=p_atk*comissao/100;const v_car_a=p_atk*cartao/100;const v_out_a=p_atk*outros_pct/100;
-    const total_cv_a=custo+frete_val+embal_val+v_imp_a+v_com_a+v_car_a+v_out_a;const mcu_atk=p_atk-total_cv_a;
-    document.getElementById('sim_atk_pct').textContent='('+atacado+'% sobre preço cheio)';
-    document.getElementById('sim_preco_atk').textContent=fmt(p_atk);
-    const mcu_atk_el=document.getElementById('sim_mcu_atk');mcu_atk_el.textContent=fmt(mcu_atk);mcu_atk_el.style.color=mcu_atk>=0?'var(--green)':'var(--red)';
-    const alerta_atk=document.getElementById('sim_alerta_atk');
-    if(mcu_atk<0){alerta_atk.textContent='Venda no atacado com prejuízo. Aumente o preço tabela ou reduza o desconto de atacado.';alerta_atk.style.color='var(--red)';}
-    else if(mcu_atk<mcu*0.5){alerta_atk.textContent='Margem no atacado muito abaixo do varejo. Avalie se o volume compensa.';alerta_atk.style.color='var(--yellow)';}
-    else{alerta_atk.textContent='Margem no atacado dentro do aceitável.';alerta_atk.style.color='var(--green)';}
-  }
 }
 
 
