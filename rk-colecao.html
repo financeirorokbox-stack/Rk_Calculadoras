@@ -37,6 +37,15 @@
   .como-usar{padding:.85rem 1.15rem;background:var(--rose-panel);border:1px solid var(--rose-panelborder);font-size:.79rem;color:var(--muted);line-height:1.65;margin-bottom:1.25rem;}
   .como-usar strong{color:var(--rose-dark);font-weight:600;}
   .como-usar b{color:var(--text);font-weight:500;}
+  .global-item-label small{display:block;font-size:.64rem;color:var(--muted);font-weight:300;margin-top:.15rem;line-height:1.35;}
+  .gloss-col{max-width:980px;margin:0 auto 2rem;padding:0 1.5rem;}
+  .gloss-col-head{background:var(--rose);padding:.7rem 1.1rem;color:#fff;font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;}
+  .gloss-col-body{background:var(--rose-panel);border:1px solid var(--rose-panelborder);border-top:none;display:grid;grid-template-columns:1fr 1fr;}
+  .gloss-col-item{padding:.85rem 1.1rem;border-bottom:1px solid var(--rose-panelborder);border-right:1px solid var(--rose-panelborder);}
+  .gloss-col-item:nth-child(even){border-right:none;}
+  .gloss-col-term{font-size:.72rem;font-weight:600;color:var(--rose-dark);margin-bottom:.25rem;}
+  .gloss-col-def{font-size:.76rem;color:var(--text);line-height:1.55;font-weight:300;}
+  @media(max-width:680px){.gloss-col-body{grid-template-columns:1fr;}.gloss-col-item{border-right:none;}}
 
   /* FORM ADICIONAR */
   .form-card{background:var(--white);border:1.5px solid var(--rose);overflow:hidden;margin-bottom:1.5rem;}
@@ -163,27 +172,27 @@
     <div class="global-header"><span class="dot-acc"></span>Custos globais da operação — aplicados a todos os produtos</div>
     <div class="global-body">
       <div class="global-item">
-        <div class="global-item-label">Imposto sobre venda</div>
+        <div class="global-item-label">Imposto sobre venda<small>Simples, ISS, ICMS — incide sobre o faturamento</small></div>
         <div class="iw"><input type="number" id="g_imposto" value="0" min="0" max="50" step="0.1" oninput="recalcAll()"><span class="ip">%</span></div>
       </div>
       <div class="global-item">
-        <div class="global-item-label">Comissão vendedor</div>
+        <div class="global-item-label">Comissão vendedor<small>% pago ao vendedor por venda</small></div>
         <div class="iw"><input type="number" id="g_comissao" value="0" min="0" max="50" step="0.1" oninput="recalcAll()"><span class="ip">%</span></div>
       </div>
       <div class="global-item">
-        <div class="global-item-label">Taxa do cartão</div>
+        <div class="global-item-label">Taxa do cartão<small>% da operadora a cada transação</small></div>
         <div class="iw"><input type="number" id="g_cartao" value="0" min="0" max="20" step="0.1" oninput="recalcAll()"><span class="ip">%</span></div>
       </div>
       <div class="global-item">
-        <div class="global-item-label">Outros %</div>
+        <div class="global-item-label">Outros %<small>marketing, marketplace, anúncios…</small></div>
         <div class="iw"><input type="number" id="g_outros" value="0" min="0" max="50" step="0.1" oninput="recalcAll()"><span class="ip">%</span></div>
       </div>
       <div class="global-item">
-        <div class="global-item-label">Frete médio por venda</div>
+        <div class="global-item-label">Frete médio por venda<small>quanto você subsidia de frete, em média</small></div>
         <div class="iw"><span class="ip">R$</span><input type="number" id="g_frete" value="0" min="0" step="0.01" oninput="recalcAll()"></div>
       </div>
       <div class="global-item">
-        <div class="global-item-label">Custos fixos mensais</div>
+        <div class="global-item-label">Custos fixos mensais<small>aluguel, salários, contador — independem das vendas</small></div>
         <div class="iw"><span class="ip">R$</span><input type="number" id="g_cf" value="0" min="0" step="100" oninput="recalcAll()"></div>
       </div>
     </div>
@@ -331,6 +340,18 @@
     <div class="chart-bars" id="chart_bars"></div>
   </div>
 
+</div>
+
+<div class="gloss-col">
+  <div class="gloss-col-head">Entenda os números</div>
+  <div class="gloss-col-body">
+    <div class="gloss-col-item"><div class="gloss-col-term">MCU — Margem de Contribuição</div><div class="gloss-col-def">Quanto sobra de cada venda depois dos custos variáveis. É o que cobre os custos fixos e, depois disso, vira lucro.</div></div>
+    <div class="gloss-col-item"><div class="gloss-col-term">MCU média da coleção</div><div class="gloss-col-def">A média das MCUs dos produtos, ponderada pela quantidade prevista — o quanto a coleção gera por unidade vendida.</div></div>
+    <div class="gloss-col-item"><div class="gloss-col-term">Faturamento mensal</div><div class="gloss-col-def">A soma de preço × quantidade prevista de todos os produtos do mix.</div></div>
+    <div class="gloss-col-item"><div class="gloss-col-term">Ponto de equilíbrio</div><div class="gloss-col-def">Quantas unidades a coleção precisa vender no mês para cobrir os custos fixos. Acima disso, é lucro.</div></div>
+    <div class="gloss-col-item"><div class="gloss-col-term">Custos variáveis</div><div class="gloss-col-def">Gastos que só existem quando há venda: custo do produto, impostos, comissão, cartão e frete.</div></div>
+    <div class="gloss-col-item"><div class="gloss-col-term">Custos fixos</div><div class="gloss-col-def">Gastos mensais que independem das vendas: aluguel, salários, contador, sistemas.</div></div>
+  </div>
 </div>
 
 <footer>Rk. &nbsp;·&nbsp; Mix de Coleção &nbsp;·&nbsp; por Elaine Lima &nbsp;·&nbsp; Estratégia Financeira para PMEs</footer>
