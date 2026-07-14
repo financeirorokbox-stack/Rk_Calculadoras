@@ -65,10 +65,10 @@
   .global-card{background:var(--rose-panel);border:1px solid var(--rose-panelborder);overflow:hidden;margin-bottom:1.5rem;}
   .global-header{padding:.8rem 1.25rem;font-size:.65rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--rose-panelborder);display:flex;align-items:center;gap:.5rem;}
   .dot-acc{width:5px;height:5px;border-radius:50%;background:var(--rose);flex-shrink:0;}
-  .global-body{display:grid;grid-template-columns:repeat(5,1fr);}
-  .global-item{padding:.75rem 1rem;border-right:1px solid var(--rose-panelborder);}
-  .global-item:last-child{border-right:none;}
-  .global-item-label{font-size:.63rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem;font-weight:500;}
+  .global-body{display:grid;grid-template-columns:repeat(3,1fr);}
+  .global-item{padding:.85rem 1.1rem;border-right:1px solid var(--rose-panelborder);border-bottom:1px solid var(--rose-panelborder);display:flex;flex-direction:column;}
+  .global-item:nth-child(3n){border-right:none;}.global-item:nth-last-child(-n+3){border-bottom:none;}.global-item .iw{width:120px;max-width:100%;}
+  .global-item-label{font-size:.63rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem;font-weight:500;flex:1;}
   .iw{display:flex;align-items:center;background:var(--white);border:1px solid var(--rose-panelborder);overflow:hidden;transition:border-color .2s;}
   .iw:focus-within{border-color:var(--rose);}
   .ip{padding:.38rem .3rem .38rem .6rem;font-size:.72rem;color:var(--muted);white-space:nowrap;}
@@ -133,8 +133,8 @@
 
   @media(max-width:700px){
     .form-body{grid-template-columns:1fr 1fr;}
-    .global-body{grid-template-columns:1fr 1fr 1fr;}
-    .global-item{border-right:none;border-bottom:1px solid var(--rose-panelborder);}
+    .global-body{grid-template-columns:1fr;}
+    .global-item{border-right:none;border-bottom:1px solid var(--rose-panelborder);}.global-item:nth-last-child(-n+3){border-bottom:1px solid var(--rose-panelborder);}.global-item:last-child{border-bottom:none;}
     .tbl-head,.tbl-row{grid-template-columns:1.5fr 1fr 1fr 1fr 40px;}
     .resumo-grid{grid-template-columns:1fr 1fr;}
     header{padding:1rem 1.25rem;}
