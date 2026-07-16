@@ -74,6 +74,10 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .mcu-val .num.disc{color:var(--rose);}
 .mcu-val .num.queda{font-size:1.1rem;}
 .mcu-val .sub{font-size:.68rem;color:var(--muted);margin-top:.2rem;}
+.mcu-selo{display:inline-flex;align-items:center;gap:.3rem;font-size:.6rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:.16rem .5rem;margin-top:.3rem;border:1px solid;white-space:nowrap;}
+.mcu-selo.otimo{color:#1d7a55;border-color:#9ed3bd;background:#e7f5ef;}
+.mcu-selo.bom{color:#4a7a2f;border-color:#bcd8a5;background:#eef6e7;}
+.mcu-selo.ruim{color:#a8342a;border-color:#f0b7b1;background:#fdecea;}
 .mcu-sep{color:var(--border);font-size:1.2rem;}
 .mcu-divider{border-left:1px solid var(--border);padding-left:1.25rem;margin-left:.25rem;}
 .insight-box{background:var(--rose-panel);border:1px solid var(--rose-panelborder);padding:1rem 1.25rem;font-size:.8rem;color:var(--muted);line-height:1.7;grid-column:1/-1;font-weight:300;}
@@ -224,6 +228,8 @@ header{padding:1rem 1.25rem;}
 .mix-tbl-head,.mix-tbl-row{grid-template-columns:1.2fr .5fr .8fr .9fr .9fr;font-size:.7rem;}
 .fg-inputs{grid-template-columns:1fr;}
 .fg-col{border-right:none;border-bottom:1px solid var(--rose-panelborder);}
+.fg-espelho{min-width:0;flex-shrink:0;}
+.fg-field-label{min-width:0;}
 .fg-kpis{grid-template-columns:1fr 1fr;}
 .fg-pivot{grid-template-columns:1fr 1fr;}
 .fg-verdict-card{flex-direction:column;gap:.75rem;}
@@ -269,6 +275,13 @@ header{padding:1rem 1.25rem;}
 <div class="field">
 <div class="field-label">Outros custos variáveis</div>
 <div class="iw"><span class="ip">R$</span><input type="number" id="outros" value="0" min="0" step="0.01" oninput="calc()"></div>
+</div>
+</div>
+<div class="panel">
+<div class="panel-title"><span class="dot-acc"></span>Referência de margem</div>
+<div class="field" style="border-bottom:none;">
+<div class="field-label">Margem mínima saudável<span class="tip" tabindex="0">?<div class="tip-box"><div class="tip-title">Margem mínima saudável</div>O seu piso. Abaixo dele, a MCU acende vermelho. No varejo de moda, costuma ficar entre 30% e 40%. Vale tanto pro diagnóstico da MCU quanto pra análise de frete grátis.</div></span><small>De 30% a 50% é saudável, acima de 50% é excelente.</small></div>
+<div class="iw"><input type="number" id="fg_min_margem" value="30" min="0" max="100" step="0.5" oninput="calc()"><span class="ip">%</span></div>
 </div>
 </div>
 </div>
@@ -340,9 +353,9 @@ header{padding:1rem 1.25rem;}
 <div class="mcu-block">
 <div class="mcu-label">Margem de Contribuição Unitária<span class="tip" tabindex="0">?<div class="tip-box"><div class="tip-title">MCU, Margem de Contribuição Unitária</div>É quanto sobra de cada venda depois de pagar todos os custos variáveis (produto, impostos, comissão, cartão, frete). Essa sobra cobre seus custos fixos e, depois disso, vira lucro.</div></span><small>sem desconto → com desconto</small></div>
 <div class="mcu-values">
-<div class="mcu-val"><div class="num" id="mcu_val">—</div><div class="sub" id="mcu_pct">—</div></div>
+<div class="mcu-val"><div class="num" id="mcu_val">—</div><div class="sub" id="mcu_pct">—</div><div id="mcu_selo"></div></div>
 <div class="mcu-sep">→</div>
-<div class="mcu-val"><div class="num disc" id="mcu_desc_val">—</div><div class="sub" id="mcu_desc_pct">—</div></div>
+<div class="mcu-val"><div class="num disc" id="mcu_desc_val">—</div><div class="sub" id="mcu_desc_pct">—</div><div id="mcu_desc_selo"></div></div>
 <div class="mcu-val mcu-divider"><div class="num queda" id="mcu_queda">—</div><div class="sub">queda na MCU<span class="tip" tabindex="0">?<div class="tip-box"><div class="tip-title">Queda na MCU</div>Mostra quanto a margem de contribuição caiu em % após o desconto.</div></span></div></div>
 </div>
 </div>
@@ -377,7 +390,7 @@ header{padding:1rem 1.25rem;}
 <div class="fg-col">
 <div class="fg-col-title">Custo real do frete</div>
 <div class="fg-field">
-<div class="fg-field-label">Custo do frete por pedido<small>Lido do campo "Frete de venda" acima</small></div>
+<div class="fg-field-label">Custo do frete por pedido<small>Lido do "Frete de venda" acima</small></div>
 <div class="fg-espelho"><span class="fg-espelho-cifrao">R$</span><span id="fg_frete_eco">0,00</span></div>
 </div>
 <div class="fg-field">
@@ -388,11 +401,11 @@ header{padding:1rem 1.25rem;}
 <div class="fg-col">
 <div class="fg-col-title">Referência de margem</div>
 <div class="fg-field">
-<div class="fg-field-label">Margem mínima saudável<small>Abaixo disso acende o alerta</small></div>
-<div class="iw"><input type="number" id="fg_min_margem" value="0" min="0" max="100" step="0.5" oninput="calcFG()"><span class="ip">%</span></div>
+<div class="fg-field-label">Margem mínima saudável<small>Lido da calculadora acima</small></div>
+<div class="fg-espelho"><span id="fg_min_eco">0</span><span class="fg-espelho-cifrao">%</span></div>
 </div>
 <div class="fg-field" style="border-bottom:none;">
-<div class="fg-field-label" style="font-size:.72rem;color:var(--muted);font-weight:300;line-height:1.55;">CMV, frete de venda, impostos, comissão, cartão e campanha são lidos automaticamente da calculadora acima. Aqui a conta compara: cobrar o frete do cliente contra bancar você mesma.</div>
+<div class="fg-field-label" style="font-size:.72rem;color:var(--muted);font-weight:300;line-height:1.55;">CMV, frete de venda, impostos, comissão, cartão, campanha e a margem mínima são lidos automaticamente da calculadora acima. Aqui a conta compara: cobrar o frete do cliente contra bancar você mesma.</div>
 </div>
 </div>
 </div>
@@ -518,6 +531,23 @@ function calc(){
   document.getElementById('mcu_val').textContent=fmt(mcu);document.getElementById('mcu_pct').textContent=(Math.round(mcu_pct*10)/10).toFixed(1)+'% da receita';
   document.getElementById('mcu_desc_val').textContent=fmt(mcu_d);document.getElementById('mcu_desc_pct').textContent=(Math.round(mcu_d_pct*10)/10).toFixed(1)+'% com desconto';
   const quedaMCU=mcu>0?((mcu-mcu_d)/mcu*100):0;const quedaEl=document.getElementById('mcu_queda');quedaEl.textContent=(Math.round(quedaMCU*10)/10).toFixed(1)+'%';quedaEl.style.color=mcu_d<mcu?'var(--red)':'var(--green)';
+
+  // diagnóstico da margem: abaixo do piso é péssimo, do piso a 50% saudável, acima de 50% excelente
+  const piso=parseFloat(document.getElementById('fg_min_margem').value)||30;
+  document.getElementById('fg_min_eco').textContent=(Math.round(piso*10)/10).toFixed(1).replace('.0','');
+  function selo(alvo,pct,temPreco){
+    const el=document.getElementById(alvo);
+    if(!temPreco){el.innerHTML='';return;}
+    let cls,txt;
+    if(pct<0){cls='ruim';txt='Negativa, prejuízo';}
+    else if(pct<piso){cls='ruim';txt='Péssimo, abaixo do seu piso';}
+    else if(pct<=50){cls='bom';txt='Saudável';}
+    else{cls='otimo';txt='Excelente';}
+    el.innerHTML='<span class="mcu-selo '+cls+'">'+txt+'</span>';
+  }
+  const temPreco=preco>0;
+  selo('mcu_selo',mcu_pct,temPreco);
+  selo('mcu_desc_selo',mcu_d_pct,temPreco&&desc>0);
 
   const extraUn=isFinite(pe_d_un)&&isFinite(pe_un)?Math.ceil(pe_d_un-pe_un):null;
   let insight='';
