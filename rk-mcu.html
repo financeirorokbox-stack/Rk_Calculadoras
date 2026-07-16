@@ -142,6 +142,8 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .fg-field:last-child{border-bottom:none;}
 .fg-field-label{font-size:.76rem;color:var(--text);flex:1;}
 .fg-field-label small{display:block;font-size:.65rem;color:var(--muted);font-weight:300;}
+.fg-espelho{display:flex;align-items:center;gap:.35rem;background:var(--rose-panel);border:1px dashed var(--rose-panelborder);padding:.42rem .7rem;min-width:131px;justify-content:flex-end;color:var(--muted);font-size:.84rem;}
+.fg-espelho-cifrao{font-size:.74rem;}
 
 /* ── VEREDICTO IMPACTANTE ── */
 .fg-verdict-wrap{padding:1.5rem 1.5rem 1.25rem;border-bottom:1px solid var(--rose-panelborder);}
@@ -375,8 +377,8 @@ header{padding:1rem 1.25rem;}
 <div class="fg-col">
 <div class="fg-col-title">Custo real do frete</div>
 <div class="fg-field">
-<div class="fg-field-label">Custo do frete por pedido<small>Valor cobrado pela transportadora</small></div>
-<div class="iw"><span class="ip">R$</span><input type="number" id="fg_frete" value="0" min="0" step="0.01" oninput="calcFG()"></div>
+<div class="fg-field-label">Custo do frete por pedido<small>Lido do campo "Frete de venda" acima</small></div>
+<div class="fg-espelho"><span class="fg-espelho-cifrao">R$</span><span id="fg_frete_eco">0,00</span></div>
 </div>
 <div class="fg-field">
 <div class="fg-field-label">Volume mensal de pedidos<small>Quantos pedidos você envia por mês</small></div>
@@ -390,7 +392,7 @@ header{padding:1rem 1.25rem;}
 <div class="iw"><input type="number" id="fg_min_margem" value="0" min="0" max="100" step="0.5" oninput="calcFG()"><span class="ip">%</span></div>
 </div>
 <div class="fg-field" style="border-bottom:none;">
-<div class="fg-field-label" style="font-size:.72rem;color:var(--muted);font-weight:300;line-height:1.55;">CMV, impostos, comissão, cartão e campanha são lidos automaticamente da calculadora acima.</div>
+<div class="fg-field-label" style="font-size:.72rem;color:var(--muted);font-weight:300;line-height:1.55;">CMV, frete de venda, impostos, comissão, cartão e campanha são lidos automaticamente da calculadora acima. Aqui a conta compara: cobrar o frete do cliente contra bancar você mesma.</div>
 </div>
 </div>
 </div>
@@ -421,7 +423,7 @@ header{padding:1rem 1.25rem;}
 <div class="fg-bars-title">Para onde vai cada real do preço de venda (com frete grátis)</div>
 <div class="fg-bar-row"><div class="fg-bar-meta"><span>Custo do produto (CMV)</span><span id="fg_b_custo_l">—</span></div><div class="fg-bar-track"><div class="fg-bar-fill" id="fg_b_custo" style="width:0%;background:#eda100;"></div></div></div>
 <div class="fg-bar-row"><div class="fg-bar-meta"><span>Impostos + comissão + cartão + campanha</span><span id="fg_b_pct_l">—</span></div><div class="fg-bar-track"><div class="fg-bar-fill" id="fg_b_pct" style="width:0%;background:#7f77dd;"></div></div></div>
-<div class="fg-bar-row"><div class="fg-bar-meta"><span>Frete de venda + outros</span><span id="fg_b_fix_l">—</span></div><div class="fg-bar-track"><div class="fg-bar-fill" id="fg_b_fix" style="width:0%;background:#1d9e75;"></div></div></div>
+<div class="fg-bar-row"><div class="fg-bar-meta"><span>Outros custos variáveis</span><span id="fg_b_fix_l">—</span></div><div class="fg-bar-track"><div class="fg-bar-fill" id="fg_b_fix" style="width:0%;background:#1d9e75;"></div></div></div>
 <div class="fg-bar-row"><div class="fg-bar-meta"><span>Frete grátis absorvido</span><span id="fg_b_frete_l">—</span></div><div class="fg-bar-track"><div class="fg-bar-fill" id="fg_b_frete" style="width:0%;background:#c96b5e;"></div></div></div>
 <div class="fg-bar-row"><div class="fg-bar-meta"><span>Lucro restante</span><span id="fg_b_lucro_l">—</span></div><div class="fg-bar-track"><div class="fg-bar-fill" id="fg_b_lucro" style="width:0%;background:#7aab7a;"></div></div></div>
 </div>
@@ -538,12 +540,15 @@ function calcFG(){
   const com=parseFloat(document.getElementById('comissao').value)||0;
   const car=parseFloat(document.getElementById('cartao').value)||0;
   const camp=parseFloat(document.getElementById('campanha').value)||0;
-  const fg_frete=parseFloat(document.getElementById('fg_frete').value)||0;
+  // o frete grátis é o "Frete de venda" da calculadora acima, um frete só, sem pedir de novo
+  const fg_frete=frete;
   const fg_volume=parseFloat(document.getElementById('fg_volume').value)||100;
   const fg_min=parseFloat(document.getElementById('fg_min_margem').value)||30;
+  document.getElementById('fg_frete_eco').textContent=fmt(fg_frete).replace('R$','').trim();
 
   const somaPctDec=(imp+com+car+camp)/100;
-  const totalFixSemFreteGratis=cmv+frete+outros;
+  // cenário base = não oferecer frete grátis, então o frete fica de fora daqui
+  const totalFixSemFreteGratis=cmv+outros;
 
   const custoSemFG=totalFixSemFreteGratis+preco*somaPctDec;
   const lucroSemFG=preco-custoSemFG;
@@ -573,12 +578,12 @@ function calcFG(){
   function setBar(bid,pct,lid,val,pv){document.getElementById(bid).style.width=Math.max(0,pct).toFixed(1)+'%';document.getElementById(lid).textContent=fmtS(val)+' ('+fmtP(pv)+')';}
   const pCmv=preco>0?cmv/preco*100:0;
   const pPct=preco>0?vPct/preco*100:0;
-  const pFix=preco>0?(frete+outros)/preco*100:0;
+  const pFix=preco>0?outros/preco*100:0;
   const pFG=preco>0?fg_frete/preco*100:0;
   const pLucro=preco>0?Math.max(lucroComFG/preco*100,0):0;
   setBar('fg_b_custo',pCmv,'fg_b_custo_l',cmv,pCmv);
   setBar('fg_b_pct',pPct,'fg_b_pct_l',vPct,pPct);
-  setBar('fg_b_fix',pFix,'fg_b_fix_l',frete+outros,pFix);
+  setBar('fg_b_fix',pFix,'fg_b_fix_l',outros,pFix);
   setBar('fg_b_frete',pFG,'fg_b_frete_l',fg_frete,pFG);
   setBar('fg_b_lucro',pLucro,'fg_b_lucro_l',Math.max(lucroComFG,0),pLucro);
 
